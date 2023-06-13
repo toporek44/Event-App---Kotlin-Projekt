@@ -4,9 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.eventapp.MainActivity
@@ -36,8 +34,6 @@ class HomeFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val homeViewModel =
-            ViewModelProvider(this).get(HomeViewModel::class.java)
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
@@ -51,8 +47,7 @@ class HomeFragment : Fragment() {
         recyclerView = view.findViewById(R.id.recyclerView)
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
-        // Initialize the UI element(s)
-        run("https://app.ticketmaster.com/discovery/v2/events.json?apikey=rClsJ88hPEAEBq7CbXw0nDAD3KmP5wdu&size=5")
+        run("https://app.ticketmaster.com/discovery/v2/events.json?apikey=rClsJ88hPEAEBq7CbXw0nDAD3KmP5wdu&size=10&sort=random")
     }
 
     fun run(url: String) {
@@ -68,7 +63,7 @@ class HomeFragment : Fragment() {
                 activity?.runOnUiThread {
                     // Update UI with the response data
                     val gson = Gson()
-                    var testModel = gson.fromJson(responseBody, EventsWrapper::class.java)
+                    val testModel = gson.fromJson(responseBody, EventsWrapper::class.java)
                     testModel.Embedded?.let { setRecyclerView(it.events) }
                 }
             }

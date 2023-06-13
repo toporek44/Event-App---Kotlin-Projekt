@@ -5,6 +5,5 @@
     <string name="title_notifications">Notifications</string>
     <string name="drawer_open">Open Drawer</string>
     <string name="drawer_close">Close Drawer</string>
-    <string name="flower1_name">flower1_name</string>
-    <string name="flower_image_content_description">flower_image_content_description</string>
+    <string name="thumbnail">Thumbnail</string>
 </resources>

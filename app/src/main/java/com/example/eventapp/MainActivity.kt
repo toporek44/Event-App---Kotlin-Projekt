@@ -13,12 +13,6 @@ import com.example.eventapp.ui.home.HomeFragment
 import com.example.eventapp.ui.notifications.NotificationsFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
-import okhttp3.Call
-import okhttp3.Callback
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.Response
-import java.io.IOException
 
 class MainActivity : AppCompatActivity() {
 
@@ -27,7 +21,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var bottomNavigationView: BottomNavigationView
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var navigationView: NavigationView
-    private val client = OkHttpClient()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,7 +63,6 @@ class MainActivity : AppCompatActivity() {
                 R.id.nav_button -> {
                     val button = menuItem.actionView?.findViewById<Button>(R.id.button)
                     button?.setOnClickListener { l ->
-                        button.text = "dupa"
                     }
                     true
                 }
