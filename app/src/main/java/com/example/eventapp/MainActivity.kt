@@ -4,12 +4,12 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.ActionBarDrawerToggle
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
 import com.example.eventapp.ui.dashboard.DashboardFragment
 import com.example.eventapp.ui.home.HomeFragment
 import com.example.eventapp.ui.notifications.NotificationsFragment
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
 
 class MainActivity : AppCompatActivity() {
@@ -34,8 +34,8 @@ class MainActivity : AppCompatActivity() {
             R.string.drawer_close
         )
         drawerLayout.addDrawerListener(drawerToggle)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.setHomeButtonEnabled(true)
+        supportActionBar?.setDisplayHomeAsUpEnabled(false)
+        supportActionBar?.setHomeButtonEnabled(false)
 
         // Set listener for drawer menu item selections
         navigationView.setNavigationItemSelectedListener { menuItem ->
@@ -43,16 +43,19 @@ class MainActivity : AppCompatActivity() {
                 R.id.navigation_home -> {
                     // Handle drawer menu item 3 click
                     drawerLayout.closeDrawers()
+                    supportActionBar?.setDisplayHomeAsUpEnabled(false)
                     true
                 }
                 R.id.navigation_dashboard -> {
                     // Handle drawer menu item 4 click
                     drawerLayout.closeDrawers()
+                    supportActionBar?.setDisplayHomeAsUpEnabled(true)
                     true
                 }
                 R.id.navigation_notifications -> {
                     // Handle drawer menu item 4 click
                     drawerLayout.closeDrawers()
+                    supportActionBar?.setDisplayHomeAsUpEnabled(false)
                     true
                 }
                 else -> false
@@ -66,6 +69,8 @@ class MainActivity : AppCompatActivity() {
                     supportFragmentManager.beginTransaction()
                         .replace(R.id.contentLayout, HomeFragment())
                         .commit()
+                    supportActionBar?.setDisplayHomeAsUpEnabled(false)
+
                     true
                 }
                 R.id.navigation_dashboard -> {
@@ -73,6 +78,7 @@ class MainActivity : AppCompatActivity() {
                     supportFragmentManager.beginTransaction()
                         .replace(R.id.contentLayout, DashboardFragment())
                         .commit()
+                    supportActionBar?.setDisplayHomeAsUpEnabled(true)
                     true
                 }
                 R.id.navigation_notifications -> {
@@ -80,6 +86,7 @@ class MainActivity : AppCompatActivity() {
                     supportFragmentManager.beginTransaction()
                         .replace(R.id.contentLayout, NotificationsFragment())
                         .commit()
+                    supportActionBar?.setDisplayHomeAsUpEnabled(false)
                     true
                 }
                 else -> false

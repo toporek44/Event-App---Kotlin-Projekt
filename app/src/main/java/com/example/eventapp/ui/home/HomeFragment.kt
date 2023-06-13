@@ -29,7 +29,7 @@ class HomeFragment : Fragment() {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        (activity as? MainActivity)?.setDrawerVisible(true)
+        (activity as? MainActivity)?.setDrawerVisible(false)
 
         val textView: TextView = binding.textHome
         homeViewModel.text.observe(viewLifecycleOwner) {
