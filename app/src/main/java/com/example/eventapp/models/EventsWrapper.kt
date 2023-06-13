@@ -6,10 +6,11 @@ import com.example.eventapp.models.page.Page
 import com.google.gson.annotations.SerializedName
 
 
-data class Events(
+data class EventsWrapper(
 
     @SerializedName("_embedded") var Embedded: Embedded? = Embedded(),
     @SerializedName("_links") var Links: Links? = Links(),
     @SerializedName("page") var page: Page? = Page()
 
 )
+

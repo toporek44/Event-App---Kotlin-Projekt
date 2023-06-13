@@ -1,18 +1,19 @@
 package com.example.eventapp.ui.home
 
 import android.os.Bundle
-import android.util.JsonReader
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.eventapp.MainActivity
 import com.example.eventapp.R
 import com.example.eventapp.databinding.FragmentHomeBinding
-import com.example.eventapp.models.Events
+import com.example.eventapp.models.EventsWrapper
+import com.example.eventapp.models.embedded.events.Events
 import com.google.gson.Gson
 import okhttp3.Call
 import okhttp3.Callback
@@ -24,7 +25,7 @@ import java.io.IOException
 class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
-    private lateinit var responseData: TextView
+    private lateinit var recyclerView: RecyclerView
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -41,23 +42,16 @@ class HomeFragment : Fragment() {
         val root: View = binding.root
 
         (activity as? MainActivity)?.setDrawerVisible(false)
-
-        val textView: TextView = binding.textHome
-
-
-//        homeViewModel.text.observe(viewLifecycleOwner) {
-//            textView.text = responseData.text
-//        }
-
         return root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Initialize the UI element(s)
-        responseData = view.findViewById(R.id.text_home)!!
+        recyclerView = view.findViewById(R.id.recyclerView)
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
+        // Initialize the UI element(s)
         run("https://app.ticketmaster.com/discovery/v2/events.json?apikey=rClsJ88hPEAEBq7CbXw0nDAD3KmP5wdu&size=5")
     }
 
@@ -71,15 +65,19 @@ class HomeFragment : Fragment() {
             override fun onFailure(call: Call, e: IOException) {}
             override fun onResponse(call: Call, response: Response) {
                 val responseBody = response.body()?.string()
-
                 activity?.runOnUiThread {
                     // Update UI with the response data
                     val gson = Gson()
-                    var testModel = gson.fromJson(responseBody, Events::class.java)
-                    responseData.text = responseBody
+                    var testModel = gson.fromJson(responseBody, EventsWrapper::class.java)
+                    testModel.Embedded?.let { setRecyclerView(it.events) }
                 }
             }
         })
+    }
+
+    fun setRecyclerView(eventList: ArrayList<Events>) {
+        val adapter = EventListAdapter(eventList)
+        recyclerView.adapter = adapter
     }
 
     override fun onDestroyView() {
