@@ -1,9 +1,10 @@
 package com.example.eventapp
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.Button
+import android.view.View
 import android.widget.CheckBox
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
@@ -13,6 +14,7 @@ import com.example.eventapp.ui.home.HomeFragment
 import com.example.eventapp.ui.notifications.NotificationsFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
+import android.widget.Button;
 
 class MainActivity : AppCompatActivity() {
 
@@ -36,8 +38,33 @@ class MainActivity : AppCompatActivity() {
             R.string.drawer_close
         )
 
+        val menu = navigationView.getMenu()
+        val filterItemMenu: MenuItem? = menu.findItem(R.id.filter_button)
+        val filterButton: Button? = filterItemMenu?.actionView?.findViewById<Button>(R.id.button)
+        filterButton?.apply {
+            text = "Filtruj"
+        }
 
 
+        val buttonLayouts =
+            listOf(R.layout.widget_button, R.layout.widget_button, R.layout.widget_button)
+
+        // Iterate over the button layout IDs
+        for (buttonLayoutId in buttonLayouts) {
+            // Inflate the XML layout for the button widget
+            val inflater: LayoutInflater = LayoutInflater.from(this)
+            val buttonLayout: View = inflater.inflate(buttonLayoutId, null)
+
+            // Create a MenuItem and add the button layout as its action view
+            val menuItem: MenuItem = menu.add(Menu.NONE, Menu.NONE, Menu.NONE, "Button")
+            menuItem.actionView = buttonLayout
+
+            // Set a click listener for the button
+            val button: Button = buttonLayout.findViewById(R.id.button)
+            button.setOnClickListener {
+                // Handle button click here
+            }
+        }
 
 
         drawerLayout.addDrawerListener(drawerToggle)
@@ -62,6 +89,17 @@ class MainActivity : AppCompatActivity() {
 
                 R.id.nav_button -> {
                     val button = menuItem.actionView?.findViewById<Button>(R.id.button)
+                    button?.setOnClickListener { l ->
+                    }
+                    true
+                }
+
+                R.id.filter_button -> {
+                    val button = menuItem.actionView?.findViewById<Button>(R.id.button)
+                    button?.apply {
+                        text = "Filtruj"
+                    }
+                    button?.setText("test")
                     button?.setOnClickListener { l ->
                     }
                     true
@@ -137,6 +175,5 @@ class MainActivity : AppCompatActivity() {
             super.onOptionsItemSelected(item)
         }
     }
-
 
 }

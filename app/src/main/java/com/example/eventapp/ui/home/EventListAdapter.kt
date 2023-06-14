@@ -36,8 +36,15 @@ class EventListAdapter(private val eventList: ArrayList<Events>) :
         // ageRestrictions
         holder.eventNameTextView.text = currentItem.name
         holder.genre.text = currentItem.classifications.first().genre?.name ?: ""
-        holder.ageRestriction.text = if (currentItem.ageRestrictions?.legalAgeEnforced == true) "+18" else ""
+        holder.ageRestriction.text =
+            if (currentItem.ageRestrictions?.legalAgeEnforced == true) "+18" else ""
         holder.eventDateTextView.text = currentItem.dates?.start?.dateTime.toString()
+
+        // city
+        // country
+        // genreId
+        // startDateTime
+        // keyword
 
         Thread {
             try {
