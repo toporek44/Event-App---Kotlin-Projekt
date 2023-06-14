@@ -1,6 +1,7 @@
 package com.example.eventapp.ui.home
 
 
+import android.content.res.Resources
 import android.graphics.BitmapFactory
 import android.view.LayoutInflater
 import android.view.View
@@ -27,18 +28,18 @@ class EventListAdapter(private val eventList: ArrayList<Events>) :
     }
 
     override fun onBindViewHolder(holder: EventViewHolder, position: Int) {
+        val newWidth = Resources.getSystem().displayMetrics.widthPixels.minus(holder.imageView.width+350)
+        holder.eventDataView.getLayoutParams().width = newWidth
+
         val currentItem = eventList[position]
-        // image
-        // name
-        // genre
-        // data
-        // pricing
-        // ageRestrictions
+        val date = currentItem.dates?.start
+        val messageString = if(date?.localDate!=null && date.localTime!=null) "${date.localDate} ${date.localTime.toString().substring(0,5)}" else "TBD"
+
         holder.eventNameTextView.text = currentItem.name
-        holder.genre.text = currentItem.classifications.first().genre?.name ?: ""
+        holder.genre.text = currentItem.classifications.first().genre?.name ?: "TBD when"
         holder.ageRestriction.text =
             if (currentItem.ageRestrictions?.legalAgeEnforced == true) "+18" else ""
-        holder.eventDateTextView.text = currentItem.dates?.start?.dateTime.toString()
+        holder.eventDateTextView.text = messageString
 
         // city
         // country
@@ -73,6 +74,6 @@ class EventListAdapter(private val eventList: ArrayList<Events>) :
         val eventDateTextView: TextView = itemView.findViewById(R.id.eventDateTextView)
         val ageRestriction: TextView = itemView.findViewById(R.id.ageRestriction)
         val genre: TextView = itemView.findViewById(R.id.genre)
-
+        val eventDataView: View = itemView.findViewById(R.id.eventData)
     }
 }
