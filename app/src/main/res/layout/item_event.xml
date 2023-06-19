@@ -6,7 +6,7 @@
     android:layout_height="wrap_content">
 
     <com.google.android.flexbox.FlexboxLayout
-        android:id="@+id/recyclerView"
+        android:id="@+id/recyclerViewFlex"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
@@ -58,6 +58,13 @@
                 android:layout_height="match_parent"
                 android:textAppearance="?android:textAppearanceMedium" />
         </com.google.android.flexbox.FlexboxLayout>
+        <ImageView
+            android:layout_height="75dp"
+            android:layout_width="75dp"
+            android:id="@+id/addToFav"
+            android:scaleType="fitXY"
+            android:title="@string/add_to_fav"
+            android:contentDescription="@string/add_to_fav" />
 
     </com.google.android.flexbox.FlexboxLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

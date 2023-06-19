@@ -9,15 +9,14 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.eventapp.MainActivity
 import com.example.eventapp.R
 import com.example.eventapp.models.embedded.events.Events
-
 import java.net.HttpURLConnection
 import java.net.URL
 
-class EventListAdapter(private val eventList: ArrayList<Events>) :
+class EventListAdapter(private val eventList: ArrayList<Events>, private var context: MainActivity) :
     RecyclerView.Adapter<EventListAdapter.EventViewHolder>() {
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventViewHolder {
         val itemView = LayoutInflater.from(parent.context).inflate(
             R.layout.item_event,
@@ -28,7 +27,7 @@ class EventListAdapter(private val eventList: ArrayList<Events>) :
     }
 
     override fun onBindViewHolder(holder: EventViewHolder, position: Int) {
-        val newWidth = Resources.getSystem().displayMetrics.widthPixels.minus(holder.imageView.width+350)
+        val newWidth = Resources.getSystem().displayMetrics.widthPixels.minus(holder.imageView.width+550)
         holder.eventDataView.getLayoutParams().width = newWidth
 
         val currentItem = eventList[position]
@@ -40,7 +39,17 @@ class EventListAdapter(private val eventList: ArrayList<Events>) :
         holder.ageRestriction.text =
             if (currentItem.ageRestrictions?.legalAgeEnforced == true) "+18" else ""
         holder.eventDateTextView.text = messageString
+        holder.addToFav.setImageResource(R.drawable.ic_add_to_fav_foreground)
 
+        holder.addToFav.setOnClickListener {
+            if (context.checkForFav(currentItem)){
+                context.deleteEvent(currentItem)
+                holder.addToFav.setImageResource(R.drawable.ic_add_to_fav_foreground)
+            }else{
+                context.saveEvent(currentItem)
+                holder.addToFav.setImageResource(R.drawable.ic_added_to_fav_foreground)
+            }
+        }
         // city
         // country
         // genreId
@@ -75,5 +84,6 @@ class EventListAdapter(private val eventList: ArrayList<Events>) :
         val ageRestriction: TextView = itemView.findViewById(R.id.ageRestriction)
         val genre: TextView = itemView.findViewById(R.id.genre)
         val eventDataView: View = itemView.findViewById(R.id.eventData)
+        val addToFav: ImageView = itemView.findViewById(R.id.addToFav)
     }
 }

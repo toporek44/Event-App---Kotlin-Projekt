@@ -60,7 +60,7 @@ class HomeFragment : Fragment() {
 
 
     private fun setRecyclerView(eventList: ArrayList<Events>) {
-        val adapter = EventListAdapter(eventList)
+        val adapter = EventListAdapter(eventList, context as MainActivity)
         recyclerView.adapter = adapter
     }
 

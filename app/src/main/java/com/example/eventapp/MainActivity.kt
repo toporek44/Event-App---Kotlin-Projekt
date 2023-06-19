@@ -1,5 +1,6 @@
 package com.example.eventapp
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
@@ -14,7 +15,8 @@ import com.example.eventapp.ui.home.HomeFragment
 import com.example.eventapp.ui.notifications.NotificationsFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
-import android.widget.Button;
+import android.widget.Button
+import com.example.eventapp.models.embedded.events.Events
 
 class MainActivity : AppCompatActivity() {
 
@@ -161,6 +163,22 @@ class MainActivity : AppCompatActivity() {
         drawerLayout.setDrawerLockMode(
             if (visible) DrawerLayout.LOCK_MODE_UNLOCKED else DrawerLayout.LOCK_MODE_LOCKED_CLOSED
         )
+    }
+
+    fun saveEvent(event:Events) {
+        getPreferences(Context.MODE_PRIVATE).edit().putString("${event.id}", event.toString()).apply()
+    }
+
+    fun deleteEvent(event: Events) {
+        getPreferences(Context.MODE_PRIVATE).edit().remove(event.id).apply()
+    }
+
+    fun checkForFav(event: Events): Boolean {
+        return readEvents(event)!=""
+    }
+
+    private fun readEvents(event:Events): String? {
+        return getPreferences(Context.MODE_PRIVATE).getString("${event.id}", "")
     }
 
     override fun onPostCreate(savedInstanceState: Bundle?) {
