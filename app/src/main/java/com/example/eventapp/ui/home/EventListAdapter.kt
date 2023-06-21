@@ -15,7 +15,10 @@ import com.example.eventapp.models.embedded.events.Events
 import java.net.HttpURLConnection
 import java.net.URL
 
-class EventListAdapter(private val eventList: ArrayList<Events>, private var context: MainActivity) :
+class EventListAdapter(
+    private val eventList: ArrayList<Events>,
+    private var context: MainActivity
+) :
     RecyclerView.Adapter<EventListAdapter.EventViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventViewHolder {
         val itemView = LayoutInflater.from(parent.context).inflate(
@@ -27,35 +30,38 @@ class EventListAdapter(private val eventList: ArrayList<Events>, private var con
     }
 
     override fun onBindViewHolder(holder: EventViewHolder, position: Int) {
-        val newWidth = Resources.getSystem().displayMetrics.widthPixels.minus(holder.imageView.width+550)
+        val newWidth =
+            Resources.getSystem().displayMetrics.widthPixels.minus(holder.imageView.width + 550)
         holder.eventDataView.getLayoutParams().width = newWidth
 
         val currentItem = eventList[position]
         val date = currentItem.dates?.start
-        val messageString = if(date?.localDate!=null && date.localTime!=null) "${date.localDate} ${date.localTime.toString().substring(0,5)}" else "TBD"
+        val messageString =
+            if (date?.localDate != null && date.localTime != null) "${date.localDate} ${
+                date.localTime.toString().substring(0, 5)
+            }" else "TBD"
 
         holder.eventNameTextView.text = currentItem.name
         holder.genre.text = currentItem.classifications.first().genre?.name ?: "TBD when"
         holder.ageRestriction.text =
             if (currentItem.ageRestrictions?.legalAgeEnforced == true) "+18" else ""
         holder.eventDateTextView.text = messageString
-        holder.addToFav.setImageResource(R.drawable.ic_add_to_fav_foreground)
+
+        if (context.checkForFav(currentItem)) {
+            holder.addToFav.setImageResource(R.drawable.ic_added_to_fav_foreground)
+        } else {
+            holder.addToFav.setImageResource(R.drawable.ic_add_to_fav_foreground)
+        }
 
         holder.addToFav.setOnClickListener {
-            if (context.checkForFav(currentItem)){
+            if (context.checkForFav(currentItem)) {
                 context.deleteEvent(currentItem)
                 holder.addToFav.setImageResource(R.drawable.ic_add_to_fav_foreground)
-            }else{
+            } else {
                 context.saveEvent(currentItem)
                 holder.addToFav.setImageResource(R.drawable.ic_added_to_fav_foreground)
             }
         }
-        // city
-        // country
-        // genreId
-        // startDateTime
-        // keyword
-
         Thread {
             try {
                 val url = URL(currentItem.images.first().url)

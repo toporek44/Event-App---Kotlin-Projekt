@@ -17,9 +17,10 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
 import android.widget.Button
 import com.example.eventapp.models.embedded.events.Events
+import com.google.gson.Gson
 
 class MainActivity : AppCompatActivity() {
-
+    val gson = Gson()
     private var isDrawerVisible: Boolean = false
     private lateinit var drawerToggle: ActionBarDrawerToggle
     private lateinit var bottomNavigationView: BottomNavigationView
@@ -29,7 +30,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
         bottomNavigationView = findViewById(R.id.bottomNavigationView)
         drawerLayout = findViewById(R.id.drawerLayout)
         navigationView = findViewById(R.id.navigationView)
@@ -165,8 +165,9 @@ class MainActivity : AppCompatActivity() {
         )
     }
 
-    fun saveEvent(event:Events) {
-        getPreferences(Context.MODE_PRIVATE).edit().putString("${event.id}", event.toString()).apply()
+    fun saveEvent(event: Events) {
+        getPreferences(Context.MODE_PRIVATE).edit().putString("${event.id}", gson.toJson(event))
+            .apply()
     }
 
     fun deleteEvent(event: Events) {
@@ -174,7 +175,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun checkForFav(event: Events): Boolean {
-        return readEvents(event)!=""
+        return getPreferences(Context.MODE_PRIVATE).contains(event.id)
+    }
+
+    fun readAllEvents(): ArrayList<Events> {
+        val jsonToProcess = getPreferences(Context.MODE_PRIVATE).all.values.toString()
+        val arrayOfEmbeddedEvents: Array<Events> =
+            gson.fromJson(jsonToProcess, Array<Events>::class.java)
+        return arrayListOf(*arrayOfEmbeddedEvents)
     }
 
     private fun readEvents(event:Events): String? {
