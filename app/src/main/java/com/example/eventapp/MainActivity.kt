@@ -1,7 +1,5 @@
 package com.example.eventapp
 
-import android.annotation.SuppressLint
-import android.os.Build
 import android.content.Context
 
 import android.os.Bundle
@@ -17,16 +15,15 @@ import com.example.eventapp.ui.notifications.NotificationsFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
 import android.widget.Button;
+import android.widget.EditText
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.example.eventapp.models.embedded.events.Events
 
-import androidx.annotation.RequiresApi
-import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.core.view.GravityCompat
 import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.eventapp.models.CountriesWrapper
-import com.example.eventapp.models.EventsWrapper
 import com.example.eventapp.models.GenresWrapper
 import com.example.eventapp.models.shared.FilterItem
 import com.example.eventapp.models.shared.FilterItemData
@@ -38,6 +35,7 @@ import com.google.gson.Gson
 
 
 class MainActivity : AppCompatActivity() {
+
     val gson = Gson()
     private var isDrawerVisible: Boolean = false
     private lateinit var drawerToggle: ActionBarDrawerToggle
@@ -46,8 +44,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var navigationView: NavigationView
     private lateinit var recyclerView: RecyclerView
 
-    @SuppressLint("MissingInflatedId")
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -63,18 +59,25 @@ class MainActivity : AppCompatActivity() {
         val context = this
         val menu = navigationView.getMenu()
         val filterItemMenu: MenuItem? = menu.findItem(R.id.filter_button)
+        val searchItemMenu: MenuItem? = menu.findItem(R.id.search)
         val clearFiltersItemMenu: MenuItem? = menu.findItem(R.id.clear_filters)
         val filterButton: Button? = filterItemMenu?.actionView?.findViewById<Button>(R.id.button)
+        val searchInput: EditText? = searchItemMenu?.actionView?.findViewById<EditText>(R.id.search)
+        val dashboard = DashboardFragment()
         val clearFiltersButton: Button? =
             clearFiltersItemMenu?.actionView?.findViewById<Button>(R.id.button)
+
+
+
         filterButton?.apply {
             text = "Filtruj"
             setOnClickListener { l ->
                 val countries = getCheckedItems(context, "countries")
                 val categories = getCheckedItems(context, "categories")
-                println(countries)
-//                setDrawerVisible(false)
-                DashboardFragment().filteredData(countries, categories)
+                val searchString = searchInput?.text.toString()
+
+                dashboard.filteredData(countries, categories, searchString)
+                drawerLayout.closeDrawer(GravityCompat.START)
             }
         }
         val filters = arrayListOf(
@@ -82,14 +85,15 @@ class MainActivity : AppCompatActivity() {
             FilterItem("Categories", getCategories()),
         )
 
+        val emptyList = arrayListOf<String>()
 
         clearFiltersButton?.apply {
             text = "Wyczysc Filtry"
             setOnClickListener { l ->
-                val emptyList = arrayListOf<String>()
                 saveCheckedItems(context, emptyList, "countries")
                 saveCheckedItems(context, emptyList, "categories")
                 setRecyclerView(filters)
+                dashboard.filteredData(emptyList, emptyList, "")
             }
         }
 
@@ -103,11 +107,9 @@ class MainActivity : AppCompatActivity() {
         drawerLayout.addDrawerListener(drawerToggle)
         supportActionBar?.setDisplayHomeAsUpEnabled(false)
         supportActionBar?.setHomeButtonEnabled(false)
-
         bottomNavigationView.setOnNavigationItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.navigation_home -> {
-                    // Replace the content layout with Fragment1
                     supportFragmentManager.beginTransaction()
                         .replace(R.id.contentLayout, HomeFragment())
                         .commit()
@@ -117,16 +119,14 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 R.id.navigation_dashboard -> {
-                    // Replace the content layout with Fragment2
                     supportFragmentManager.beginTransaction()
-                        .replace(R.id.contentLayout, DashboardFragment())
+                        .replace(R.id.contentLayout, dashboard)
                         .commit()
                     supportActionBar?.setDisplayHomeAsUpEnabled(true)
                     true
                 }
 
                 R.id.navigation_notifications -> {
-                    // Replace the content layout with Fragment2
                     supportFragmentManager.beginTransaction()
                         .replace(R.id.contentLayout, NotificationsFragment())
                         .commit()
@@ -139,7 +139,6 @@ class MainActivity : AppCompatActivity() {
         }
 
 
-        // Set the initial fragment
         navigationView.menu.getItem(0).isChecked = true
         supportFragmentManager.beginTransaction()
             .replace(R.id.contentLayout, HomeFragment())
@@ -177,13 +176,6 @@ class MainActivity : AppCompatActivity() {
         )
     }
 
-
-    fun readAllEvents(): ArrayList<Events> {
-        val jsonToProcess = getPreferences(Context.MODE_PRIVATE).all.values.toString()
-        val arrayOfEmbeddedEvents: Array<Events> =
-            gson.fromJson(jsonToProcess, Array<Events>::class.java)
-        return arrayListOf(*arrayOfEmbeddedEvents)
-    }
 
     private fun readEvents(event: Events): String? {
         return getPreferences(Context.MODE_PRIVATE).getString("${event.id}", "")
@@ -235,7 +227,6 @@ class MainActivity : AppCompatActivity() {
         val adapter = ExpandableAdapter(this, filters)
         recyclerView.adapter = adapter
         ViewCompat.setNestedScrollingEnabled(recyclerView, false)
-
     }
 
 }

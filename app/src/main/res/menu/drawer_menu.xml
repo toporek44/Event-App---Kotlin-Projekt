@@ -6,6 +6,10 @@
         android:id="@+id/test"
         android:layout_height="match_parent">
         <item
+            android:id="@+id/search"
+            app:actionLayout="@layout/widget_input"
+            tools:ignore="MenuTitle" />
+        <item
             android:id="@+id/filters"
             app:actionLayout="@layout/filters"
             tools:ignore="MenuTitle" />

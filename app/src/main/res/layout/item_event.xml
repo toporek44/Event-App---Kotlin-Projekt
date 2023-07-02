@@ -12,59 +12,71 @@
         android:layout_marginTop="4dp"
         android:padding="10dp"
         app:flexDirection="row"
+        app:justifyContent="space_between"
         app:layout_constraintTop_toTopOf="parent">
 
-        <ImageView
-            android:id="@+id/thumbnail"
-            android:layout_width="75dp"
-            android:layout_height="75dp"
-            android:contentDescription="@string/thumbnail"
-            android:scaleType="fitXY"
-            android:layout_marginEnd="10dp"
-            tools:layout_editor_absoluteX="10dp"
-            tools:layout_editor_absoluteY="10dp" />
 
         <com.google.android.flexbox.FlexboxLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/eventData"
-            app:flexDirection="column"
-            tools:layout_editor_absoluteX="60dp"
-            tools:layout_editor_absoluteY="10dp">
+            android:layout_marginTop="4dp"
+            app:flexDirection="row"
+            app:layout_constraintTop_toTopOf="parent">
 
-            <TextView
-                android:id="@+id/eventNameTextView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:maxLines="1"
-                android:ellipsize="end"
-                android:textAppearance="?android:textAppearanceMedium" />
+            <ImageView
+                android:id="@+id/thumbnail"
+                android:layout_width="75dp"
+                android:layout_height="75dp"
+                android:layout_marginEnd="10dp"
+                android:contentDescription="@string/thumbnail"
+                android:scaleType="fitXY"
+                tools:layout_editor_absoluteX="10dp"
+                tools:layout_editor_absoluteY="10dp" />
 
-            <TextView
-                android:id="@+id/eventDateTextView"
+            <com.google.android.flexbox.FlexboxLayout
+                android:id="@+id/eventData"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:textAppearance="?android:textAppearanceMedium" />
+                android:layout_height="wrap_content"
+                app:flexDirection="column"
+                tools:layout_editor_absoluteX="60dp"
+                tools:layout_editor_absoluteY="10dp">
 
-            <TextView
-                android:id="@+id/genre"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:textAppearance="?android:textAppearanceMedium" />
+                <TextView
+                    android:id="@+id/eventNameTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textAppearance="?android:textAppearanceMedium" />
 
-            <TextView
-                android:id="@+id/ageRestriction"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:textAppearance="?android:textAppearanceMedium" />
+                <TextView
+                    android:id="@+id/eventDateTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:textAppearance="?android:textAppearanceMedium" />
+
+                <TextView
+                    android:id="@+id/genre"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:textAppearance="?android:textAppearanceMedium" />
+
+                <TextView
+                    android:id="@+id/ageRestriction"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:textAppearance="?android:textAppearanceMedium" />
+            </com.google.android.flexbox.FlexboxLayout>
         </com.google.android.flexbox.FlexboxLayout>
+
         <ImageView
-            android:layout_height="75dp"
-            android:layout_width="75dp"
             android:id="@+id/addToFav"
+            android:layout_width="120dp"
+            android:layout_height="75dp"
+            android:contentDescription="@string/add_to_fav"
+            android:minWidth="120dp"
             android:scaleType="fitXY"
-            android:title="@string/add_to_fav"
-            android:contentDescription="@string/add_to_fav" />
+            android:title="@string/add_to_fav" />
 
     </com.google.android.flexbox.FlexboxLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

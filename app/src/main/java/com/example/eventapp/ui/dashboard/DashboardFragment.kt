@@ -16,6 +16,7 @@ import com.example.eventapp.databinding.FragmentDashboardBinding
 import com.example.eventapp.models.EventsWrapper
 import com.example.eventapp.models.embedded.events.Events
 import com.example.eventapp.ui.home.EventListAdapter
+import com.example.eventapp.ui.utils.getCheckedItems
 import com.google.gson.Gson
 import kotlin.math.log
 
@@ -23,8 +24,6 @@ class DashboardFragment : Fragment() {
 
     private var _binding: FragmentDashboardBinding? = null
     private lateinit var recyclerView: RecyclerView
-    private var list = arrayListOf<Events>()
-    private lateinit var adapter: EventListAdapter
 
     private val binding get() = _binding!!
 
@@ -38,7 +37,6 @@ class DashboardFragment : Fragment() {
 
         _binding = FragmentDashboardBinding.inflate(inflater, container, false)
         val root: View = binding.root
-        adapter = EventListAdapter(list, context as MainActivity)
         (activity as? MainActivity)?.setDrawerVisible(true)
 
         return root
@@ -46,18 +44,17 @@ class DashboardFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        val context = requireContext()
         recyclerView = view.findViewById(R.id.recyclerView)
-        recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        recyclerView.adapter = adapter
+        recyclerView.layoutManager = LinearLayoutManager(context)
+        val emptyList = arrayListOf<String>()
+        filteredData(emptyList, emptyList, "")
 
-        val response =
-            com.example.eventapp.ui.utils.run(
-                "https://app.ticketmaster.com/discovery/v2/events.json?apikey=rClsJ88hPEAEBq7CbXw0nDAD3KmP5wdu&size=10&sort=random",
-                ::setLayout,
-                activity
-            )
-
+        com.example.eventapp.ui.utils.run(
+            "https://app.ticketmaster.com/discovery/v2/events.json?apikey=rClsJ88hPEAEBq7CbXw0nDAD3KmP5wdu&sort=random",
+            ::update,
+            activity,
+        )
     }
 
     override fun onDestroyView() {
@@ -68,36 +65,37 @@ class DashboardFragment : Fragment() {
     private fun setLayout(responseBody: String?) {
         val gson = Gson()
         val testModel = gson.fromJson(responseBody, EventsWrapper::class.java)
-        println("CREATRE")
-
-        list = testModel.Embedded?.events ?: arrayListOf()
+        testModel.Embedded?.let { setRecyclerView(it.events) }
     }
 
-    // this function couse problems
     private fun update(responseBody: String?) {
-        val gson = Gson()
-        val testModel = gson.fromJson(responseBody, EventsWrapper::class.java)
-        println("UPDATE")
-
-        list = testModel.Embedded?.events ?: arrayListOf()
+        setLayout(responseBody)
+        recyclerView.adapter?.notifyDataSetChanged()
     }
 
-    private fun setRecyclerView() {
+
+    private fun setRecyclerView(eventList: ArrayList<Events>) {
+        val adapter = EventListAdapter(eventList, context as MainActivity)
         recyclerView.adapter = adapter
-        println(recyclerView.adapter)
-
     }
 
-//    private fun setRecyclerView(eventList: ArrayList<Events>) {
-//        val adapter = EventListAdapter(eventList, context as MainActivity)
-//        recyclerView.adapter = adapter
-//    }
+    fun parseQueryData(string: String): String {
+        return string.replace(Regex("[\\[\\]]"), "")
+    }
 
+    fun filteredData(
+        countries: ArrayList<String>,
+        categories: ArrayList<String>,
+        searchString: String
+    ) {
+        val parsedCategories = parseQueryData(categories.toString())
+        val parsedCountries = parseQueryData(countries.toString())
 
-    fun filteredData(countries: ArrayList<String>, categroies: ArrayList<String>) {
-        println("https://app.ticketmaster.com/discovery/v2/events.json?apikey=rClsJ88hPEAEBq7CbXw0nDAD3KmP5wdu&city=$countries")
+        val catogoriesParam = if (categories.size > 0) "&segmentId=$parsedCategories" else ""
+        val countriesParam = if (countries.size > 0) "&city=$parsedCountries" else ""
+        val keywordParam = if (searchString.isNotEmpty()) "&keyword=$searchString" else ""
         com.example.eventapp.ui.utils.run(
-            "https://app.ticketmaster.com/discovery/v2/events.json?apikey=rClsJ88hPEAEBq7CbXw0nDAD3KmP5wdu&city=$countries",
+            "https://app.ticketmaster.com/discovery/v2/events.json?apikey=rClsJ88hPEAEBq7CbXw0nDAD3KmP5wdu$countriesParam$catogoriesParam$keywordParam&sort=random",
             ::update,
             activity,
         )

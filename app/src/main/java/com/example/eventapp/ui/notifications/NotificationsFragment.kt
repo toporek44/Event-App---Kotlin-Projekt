@@ -13,6 +13,7 @@ import com.example.eventapp.R
 import com.example.eventapp.databinding.FragmentNotificationsBinding
 import com.example.eventapp.models.embedded.events.Events
 import com.example.eventapp.ui.home.EventListAdapter
+import com.example.eventapp.ui.utils.readFavorites
 import java.util.ArrayList
 
 class NotificationsFragment : Fragment() {
@@ -20,8 +21,6 @@ class NotificationsFragment : Fragment() {
     private var _binding: FragmentNotificationsBinding? = null
     private lateinit var recyclerView: RecyclerView
 
-    // This property is only valid between onCreateView and
-    // onDestroyView.
     private val binding get() = _binding!!
 
     override fun onCreateView(
@@ -44,13 +43,12 @@ class NotificationsFragment : Fragment() {
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
 
-        val allSavedEvents: ArrayList<Events>? = (activity as? MainActivity)?.readAllEvents()
+        val allSavedEvents: ArrayList<Events> = readFavorites(requireContext())
         setRecyclerView(allSavedEvents)
     }
 
     private fun setRecyclerView(eventList: ArrayList<Events>?) {
         val adapter = eventList?.let { EventListAdapter(it, context as MainActivity) }
-        println(adapter)
         recyclerView.adapter = adapter
     }
 

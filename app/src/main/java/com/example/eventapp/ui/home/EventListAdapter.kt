@@ -12,6 +12,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.eventapp.MainActivity
 import com.example.eventapp.R
 import com.example.eventapp.models.embedded.events.Events
+import com.example.eventapp.ui.utils.getCheckedItems
+import com.example.eventapp.ui.utils.readFavorites
+import com.example.eventapp.ui.utils.saveFavorites
 import java.net.HttpURLConnection
 import java.net.URL
 
@@ -20,12 +23,16 @@ class EventListAdapter(
     private var context: MainActivity
 ) :
     RecyclerView.Adapter<EventListAdapter.EventViewHolder>() {
+    private var favItems = arrayListOf<Events>()
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventViewHolder {
         val itemView = LayoutInflater.from(parent.context).inflate(
             R.layout.item_event,
             parent,
             false
         )
+
+        favItems = readFavorites(parent.context)
+
         return EventViewHolder(itemView)
     }
 
@@ -41,26 +48,27 @@ class EventListAdapter(
                 date.localTime.toString().substring(0, 5)
             }" else "TBD"
 
-        holder.eventNameTextView.text = currentItem.name
+        holder.eventNameTextView.text =
+            if (currentItem.name?.isNotEmpty() == true) currentItem.name else "Name"
         holder.genre.text = currentItem.classifications.first().genre?.name ?: "TBD when"
         holder.ageRestriction.text =
             if (currentItem.ageRestrictions?.legalAgeEnforced == true) "+18" else ""
         holder.eventDateTextView.text = messageString
-
-        if (context.checkForFav(currentItem)) {
+        if (favItems.contains(currentItem)) {
             holder.addToFav.setImageResource(R.drawable.ic_added_to_fav_foreground)
         } else {
             holder.addToFav.setImageResource(R.drawable.ic_add_to_fav_foreground)
         }
 
         holder.addToFav.setOnClickListener {
-            if (context.checkForFav(currentItem)) {
-                context.deleteEvent(currentItem)
+            if (favItems.contains(currentItem)) {
+                favItems.remove(currentItem)
                 holder.addToFav.setImageResource(R.drawable.ic_add_to_fav_foreground)
             } else {
-                context.saveEvent(currentItem)
+                favItems.add(currentItem)
                 holder.addToFav.setImageResource(R.drawable.ic_added_to_fav_foreground)
             }
+            saveFavorites(holder.eventNameTextView.context, favItems)
         }
         Thread {
             try {

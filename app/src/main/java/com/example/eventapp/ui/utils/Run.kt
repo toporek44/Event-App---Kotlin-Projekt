@@ -26,18 +26,8 @@ fun run(
             val responseBody = response.body()?.string()
 
             mHandler.post(Runnable {
-                println("TEST 2")
                 setData(responseBody)
             })
-
-            // Update the UI with the response data
-
-
-//            val responseBody = response.body()?.string()
-//            activity?.runOnUiThread {
-//                println("TEST 2")
-//                setData(responseBody)
-//            }
         }
     })
 }
