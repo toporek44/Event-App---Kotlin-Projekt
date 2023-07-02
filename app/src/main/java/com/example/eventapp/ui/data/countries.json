@@ -1,0 +1,88 @@
+{
+  "countries": [
+    {
+      "name": "United States",
+      "code": "US"
+    },
+    {
+      "name": "India",
+      "code": "IN"
+    },
+    {
+      "name": "China",
+      "code": "CN"
+    },
+    {
+      "name": "Indonesia",
+      "code": "ID"
+    },
+    {
+      "name": "Pakistan",
+      "code": "PK"
+    },
+    {
+      "name": "Brazil",
+      "code": "BR"
+    },
+    {
+      "name": "Nigeria",
+      "code": "NG"
+    },
+    {
+      "name": "Bangladesh",
+      "code": "BD"
+    },
+    {
+      "name": "Russia",
+      "code": "RU"
+    },
+    {
+      "name": "Mexico",
+      "code": "MX"
+    },
+    {
+      "name": "Japan",
+      "code": "JP"
+    },
+    {
+      "name": "Ethiopia",
+      "code": "ET"
+    },
+    {
+      "name": "Philippines",
+      "code": "PH"
+    },
+    {
+      "name": "Egypt",
+      "code": "EG"
+    },
+    {
+      "name": "Vietnam",
+      "code": "VN"
+    },
+    {
+      "name": "DR Congo",
+      "code": "CD"
+    },
+    {
+      "name": "Turkey",
+      "code": "TR"
+    },
+    {
+      "name": "Iran",
+      "code": "IR"
+    },
+    {
+      "name": "Germany",
+      "code": "DE"
+    },
+    {
+      "name": "Thailand",
+      "code": "TH"
+    },
+    {
+      "name": "United Kingdom",
+      "code": "GB"
+    }
+  ]
+}

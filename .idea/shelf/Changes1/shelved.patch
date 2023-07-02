@@ -1,0 +1,489 @@
+Index: .idea/deploymentTargetDropDown.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project version=\"4\">\n  <component name=\"deploymentTargetDropDown\">\n    <targetSelectedWithDropDown>\n      <Target>\n        <type value=\"QUICK_BOOT_TARGET\" />\n        <deviceKey>\n          <Key>\n            <type value=\"VIRTUAL_DEVICE_PATH\" />\n            <value value=\"C:\\Users\\przem\\.android\\avd\\Pixel_6_Pro_API_30.avd\" />\n          </Key>\n        </deviceKey>\n      </Target>\n    </targetSelectedWithDropDown>\n    <timeTargetWasSelectedWithDropDown value=\"2023-06-14T19:09:49.563252600Z\" />\n  </component>\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/deploymentTargetDropDown.xml b/.idea/deploymentTargetDropDown.xml
+--- a/.idea/deploymentTargetDropDown.xml	(revision 0ef312e1e1180e49f6bc559dfedaa0bfd31691c0)
++++ b/.idea/deploymentTargetDropDown.xml	(date 1687198745855)
+@@ -7,11 +7,11 @@
+         <deviceKey>
+           <Key>
+             <type value="VIRTUAL_DEVICE_PATH" />
+-            <value value="C:\Users\przem\.android\avd\Pixel_6_Pro_API_30.avd" />
++            <value value="C:\Users\maciek\.android\avd\Pixel_6_API_33.avd" />
+           </Key>
+         </deviceKey>
+       </Target>
+     </targetSelectedWithDropDown>
+-    <timeTargetWasSelectedWithDropDown value="2023-06-14T19:09:49.563252600Z" />
++    <timeTargetWasSelectedWithDropDown value="2023-06-19T18:17:42.287918300Z" />
+   </component>
+ </project>
+\ No newline at end of file
+Index: app/src/main/assets/countries.json
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/assets/countries.json b/app/src/main/assets/countries.json
+new file mode 100644
+--- /dev/null	(date 1687205004533)
++++ b/app/src/main/assets/countries.json	(date 1687205004533)
+@@ -0,0 +1,88 @@
++{
++  "countries": [
++    {
++      "name": "United States",
++      "countryCode": "US"
++    },
++    {
++      "name": "India",
++      "countryCode": "IN"
++    },
++    {
++      "name": "China",
++      "countryCode": "CN"
++    },
++    {
++      "name": "Indonesia",
++      "countryCode": "ID"
++    },
++    {
++      "name": "Pakistan",
++      "countryCode": "PK"
++    },
++    {
++      "name": "Brazil",
++      "countryCode": "BR"
++    },
++    {
++      "name": "Nigeria",
++      "countryCode": "NG"
++    },
++    {
++      "name": "Bangladesh",
++      "countryCode": "BD"
++    },
++    {
++      "name": "Russia",
++      "countryCode": "RU"
++    },
++    {
++      "name": "Mexico",
++      "countryCode": "MX"
++    },
++    {
++      "name": "Japan",
++      "countryCode": "JP"
++    },
++    {
++      "name": "Ethiopia",
++      "countryCode": "ET"
++    },
++    {
++      "name": "Philippines",
++      "countryCode": "PH"
++    },
++    {
++      "name": "Egypt",
++      "countryCode": "EG"
++    },
++    {
++      "name": "Vietnam",
++      "countryCode": "VN"
++    },
++    {
++      "name": "DR Congo",
++      "countryCode": "CD"
++    },
++    {
++      "name": "Turkey",
++      "countryCode": "TR"
++    },
++    {
++      "name": "Iran",
++      "countryCode": "IR"
++    },
++    {
++      "name": "Germany",
++      "countryCode": "DE"
++    },
++    {
++      "name": "Thailand",
++      "countryCode": "TH"
++    },
++    {
++      "name": "United Kingdom",
++      "countryCode": "GB"
++    }
++  ]
++}
+Index: app/src/main/java/com/example/eventapp/ui/home/EventListAdapter.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.eventapp.ui.home\r\n\r\n\r\nimport android.content.res.Resources\r\nimport android.graphics.BitmapFactory\r\nimport android.view.LayoutInflater\r\nimport android.view.View\r\nimport android.view.ViewGroup\r\nimport android.widget.ImageView\r\nimport android.widget.TextView\r\nimport androidx.recyclerview.widget.RecyclerView\r\nimport com.example.eventapp.R\r\nimport com.example.eventapp.models.embedded.events.Events\r\n\r\nimport java.net.HttpURLConnection\r\nimport java.net.URL\r\n\r\nclass EventListAdapter(private val eventList: ArrayList<Events>) :\r\n    RecyclerView.Adapter<EventListAdapter.EventViewHolder>() {\r\n\r\n    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventViewHolder {\r\n        val itemView = LayoutInflater.from(parent.context).inflate(\r\n            R.layout.item_event,\r\n            parent,\r\n            false\r\n        )\r\n        return EventViewHolder(itemView)\r\n    }\r\n\r\n    override fun onBindViewHolder(holder: EventViewHolder, position: Int) {\r\n        val newWidth = Resources.getSystem().displayMetrics.widthPixels.minus(holder.imageView.width+350)\r\n        holder.eventDataView.getLayoutParams().width = newWidth\r\n\r\n        val currentItem = eventList[position]\r\n        val date = currentItem.dates?.start\r\n        val messageString = if(date?.localDate!=null && date.localTime!=null) \"${date.localDate} ${date.localTime.toString().substring(0,5)}\" else \"TBD\"\r\n\r\n        holder.eventNameTextView.text = currentItem.name\r\n        holder.genre.text = currentItem.classifications.first().genre?.name ?: \"TBD when\"\r\n        holder.ageRestriction.text =\r\n            if (currentItem.ageRestrictions?.legalAgeEnforced == true) \"+18\" else \"\"\r\n        holder.eventDateTextView.text = messageString\r\n\r\n        // city\r\n        // country\r\n        // genreId\r\n        // startDateTime\r\n        // keyword\r\n\r\n        Thread {\r\n            try {\r\n                val url = URL(currentItem.images.first().url)\r\n                val connection = url.openConnection() as HttpURLConnection\r\n                connection.doInput = true\r\n                connection.connect()\r\n\r\n                val inputStream = connection.inputStream\r\n                val bitmap = BitmapFactory.decodeStream(inputStream)\r\n\r\n                holder.imageView.post {\r\n                    holder.imageView.setImageBitmap(bitmap)\r\n                }\r\n            } catch (e: Exception) {\r\n                e.printStackTrace()\r\n            }\r\n        }.start()\r\n    }\r\n\r\n    override fun getItemCount() = eventList.size\r\n\r\n    inner class EventViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {\r\n        val imageView: ImageView = itemView.findViewById(R.id.thumbnail)\r\n        val eventNameTextView: TextView = itemView.findViewById(R.id.eventNameTextView)\r\n        val eventDateTextView: TextView = itemView.findViewById(R.id.eventDateTextView)\r\n        val ageRestriction: TextView = itemView.findViewById(R.id.ageRestriction)\r\n        val genre: TextView = itemView.findViewById(R.id.genre)\r\n        val eventDataView: View = itemView.findViewById(R.id.eventData)\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/example/eventapp/ui/home/EventListAdapter.kt b/app/src/main/java/com/example/eventapp/ui/home/EventListAdapter.kt
+--- a/app/src/main/java/com/example/eventapp/ui/home/EventListAdapter.kt	(revision 0ef312e1e1180e49f6bc559dfedaa0bfd31691c0)
++++ b/app/src/main/java/com/example/eventapp/ui/home/EventListAdapter.kt	(date 1687205354642)
+@@ -28,12 +28,16 @@
+     }
+ 
+     override fun onBindViewHolder(holder: EventViewHolder, position: Int) {
+-        val newWidth = Resources.getSystem().displayMetrics.widthPixels.minus(holder.imageView.width+350)
++        val newWidth =
++            Resources.getSystem().displayMetrics.widthPixels.minus(holder.imageView.width + 350)
+         holder.eventDataView.getLayoutParams().width = newWidth
+ 
+         val currentItem = eventList[position]
+         val date = currentItem.dates?.start
+-        val messageString = if(date?.localDate!=null && date.localTime!=null) "${date.localDate} ${date.localTime.toString().substring(0,5)}" else "TBD"
++        val messageString =
++            if (date?.localDate != null && date.localTime != null) "${date.localDate} ${
++                date.localTime.toString().substring(0, 5)
++            }" else "TBD"
+ 
+         holder.eventNameTextView.text = currentItem.name
+         holder.genre.text = currentItem.classifications.first().genre?.name ?: "TBD when"
+@@ -41,12 +45,6 @@
+             if (currentItem.ageRestrictions?.legalAgeEnforced == true) "+18" else ""
+         holder.eventDateTextView.text = messageString
+ 
+-        // city
+-        // country
+-        // genreId
+-        // startDateTime
+-        // keyword
+-
+         Thread {
+             try {
+                 val url = URL(currentItem.images.first().url)
+Index: app/src/main/res/menu/drawer_menu.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><menu xmlns:android=\"http://schemas.android.com/apk/res/android\"\r\n    xmlns:app=\"http://schemas.android.com/apk/res-auto\">\r\n    <group\r\n        android:id=\"@+id/test\"\r\n        android:checkableBehavior=\"single\">\r\n        <item\r\n            android:id=\"@+id/nav_checkbox\"\r\n            android:title=\"CheckBox\"\r\n            app:actionLayout=\"@layout/widget_check\" />\r\n\r\n        <item\r\n            android:id=\"@+id/nav_button\"\r\n            android:title=\"Button\"\r\n            app:actionLayout=\"@layout/widget_button\" />\r\n\r\n        <item\r\n            android:id=\"@+id/filter_button\"\r\n            android:title=\"Button\"\r\n            app:actionLayout=\"@layout/widget_button\" />\r\n    </group>\r\n</menu>\r\n\r\n\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/res/menu/drawer_menu.xml b/app/src/main/res/menu/drawer_menu.xml
+--- a/app/src/main/res/menu/drawer_menu.xml	(revision 0ef312e1e1180e49f6bc559dfedaa0bfd31691c0)
++++ b/app/src/main/res/menu/drawer_menu.xml	(date 1687199296584)
+@@ -17,7 +17,10 @@
+             android:id="@+id/filter_button"
+             android:title="Button"
+             app:actionLayout="@layout/widget_button" />
++
+     </group>
++
++
+ </menu>
+ 
+ 
+Index: app/src/main/java/com/example/eventapp/models/CountriesWrapper.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/example/eventapp/models/CountriesWrapper.kt b/app/src/main/java/com/example/eventapp/models/CountriesWrapper.kt
+new file mode 100644
+--- /dev/null	(date 1687205186135)
++++ b/app/src/main/java/com/example/eventapp/models/CountriesWrapper.kt	(date 1687205186135)
+@@ -0,0 +1,12 @@
++package com.example.eventapp.models
++
++import com.example.eventapp.models.embedded.events.embedded.venues.Country
++import com.google.gson.annotations.SerializedName
++
++
++data class CountriesWrapper(
++
++    @SerializedName("countries") var countries: ArrayList<Country> = arrayListOf(),
++
++    )
++
+Index: app/src/main/java/com/example/eventapp/MainActivity.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.eventapp\n\nimport android.os.Bundle\nimport android.view.LayoutInflater\nimport android.view.Menu\nimport android.view.MenuItem\nimport android.view.View\nimport android.widget.CheckBox\nimport androidx.appcompat.app.ActionBarDrawerToggle\nimport androidx.appcompat.app.AppCompatActivity\nimport androidx.drawerlayout.widget.DrawerLayout\nimport com.example.eventapp.ui.dashboard.DashboardFragment\nimport com.example.eventapp.ui.home.HomeFragment\nimport com.example.eventapp.ui.notifications.NotificationsFragment\nimport com.google.android.material.bottomnavigation.BottomNavigationView\nimport com.google.android.material.navigation.NavigationView\nimport android.widget.Button;\n\nclass MainActivity : AppCompatActivity() {\n\n    private var isDrawerVisible: Boolean = false\n    private lateinit var drawerToggle: ActionBarDrawerToggle\n    private lateinit var bottomNavigationView: BottomNavigationView\n    private lateinit var drawerLayout: DrawerLayout\n    private lateinit var navigationView: NavigationView\n\n    override fun onCreate(savedInstanceState: Bundle?) {\n        super.onCreate(savedInstanceState)\n        setContentView(R.layout.activity_main)\n\n        bottomNavigationView = findViewById(R.id.bottomNavigationView)\n        drawerLayout = findViewById(R.id.drawerLayout)\n        navigationView = findViewById(R.id.navigationView)\n        drawerToggle = ActionBarDrawerToggle(\n            this,\n            drawerLayout,\n            R.string.drawer_open,\n            R.string.drawer_close\n        )\n\n        val menu = navigationView.getMenu()\n        val filterItemMenu: MenuItem? = menu.findItem(R.id.filter_button)\n        val filterButton: Button? = filterItemMenu?.actionView?.findViewById<Button>(R.id.button)\n        filterButton?.apply {\n            text = \"Filtruj\"\n        }\n\n\n        val buttonLayouts =\n            listOf(R.layout.widget_button, R.layout.widget_button, R.layout.widget_button)\n\n        // Iterate over the button layout IDs\n        for (buttonLayoutId in buttonLayouts) {\n            // Inflate the XML layout for the button widget\n            val inflater: LayoutInflater = LayoutInflater.from(this)\n            val buttonLayout: View = inflater.inflate(buttonLayoutId, null)\n\n            // Create a MenuItem and add the button layout as its action view\n            val menuItem: MenuItem = menu.add(Menu.NONE, Menu.NONE, Menu.NONE, \"Button\")\n            menuItem.actionView = buttonLayout\n\n            // Set a click listener for the button\n            val button: Button = buttonLayout.findViewById(R.id.button)\n            button.setOnClickListener {\n                // Handle button click here\n            }\n        }\n\n\n        drawerLayout.addDrawerListener(drawerToggle)\n        supportActionBar?.setDisplayHomeAsUpEnabled(false)\n        supportActionBar?.setHomeButtonEnabled(false)\n\n        // Set listener for drawer menu item selections\n        navigationView.setNavigationItemSelectedListener { menuItem ->\n            when (menuItem.itemId) {\n                R.id.nav_checkbox -> {\n                    val checkBox = menuItem.actionView?.findViewById<CheckBox>(R.id.checkBox)\n                    checkBox?.setOnCheckedChangeListener { _, isChecked ->\n                        if (isChecked) {\n                            // Checkbox is checked\n                        } else {\n                            // Checkbox is unchecked\n                        }\n                    }\n                    true\n                }\n\n\n                R.id.nav_button -> {\n                    val button = menuItem.actionView?.findViewById<Button>(R.id.button)\n                    button?.setOnClickListener { l ->\n                    }\n                    true\n                }\n\n                R.id.filter_button -> {\n                    val button = menuItem.actionView?.findViewById<Button>(R.id.button)\n                    button?.apply {\n                        text = \"Filtruj\"\n                    }\n                    button?.setText(\"test\")\n                    button?.setOnClickListener { l ->\n                    }\n                    true\n                }\n\n                else -> false\n            }\n        }\n\n        bottomNavigationView.setOnNavigationItemSelectedListener { menuItem ->\n            when (menuItem.itemId) {\n                R.id.navigation_home -> {\n                    // Replace the content layout with Fragment1\n                    supportFragmentManager.beginTransaction()\n                        .replace(R.id.contentLayout, HomeFragment())\n                        .commit()\n                    supportActionBar?.setDisplayHomeAsUpEnabled(false)\n\n                    true\n                }\n\n                R.id.navigation_dashboard -> {\n                    // Replace the content layout with Fragment2\n                    supportFragmentManager.beginTransaction()\n                        .replace(R.id.contentLayout, DashboardFragment())\n                        .commit()\n                    supportActionBar?.setDisplayHomeAsUpEnabled(true)\n                    true\n                }\n\n                R.id.navigation_notifications -> {\n                    // Replace the content layout with Fragment2\n                    supportFragmentManager.beginTransaction()\n                        .replace(R.id.contentLayout, NotificationsFragment())\n                        .commit()\n                    supportActionBar?.setDisplayHomeAsUpEnabled(false)\n                    true\n                }\n\n                else -> false\n            }\n        }\n\n        // Set the initial fragment\n        navigationView.menu.getItem(0).isChecked = true\n        supportFragmentManager.beginTransaction()\n            .replace(R.id.contentLayout, HomeFragment())\n            .commit()\n    }\n\n    override fun onPrepareOptionsMenu(menu: Menu): Boolean {\n        drawerToggle.isDrawerIndicatorEnabled = this.isDrawerVisible\n        return super.onPrepareOptionsMenu(menu)\n    }\n\n    fun setDrawerVisible(visible: Boolean) {\n        this.isDrawerVisible = visible\n        invalidateOptionsMenu()\n        drawerLayout.setDrawerLockMode(\n            if (visible) DrawerLayout.LOCK_MODE_UNLOCKED else DrawerLayout.LOCK_MODE_LOCKED_CLOSED\n        )\n    }\n\n    override fun onPostCreate(savedInstanceState: Bundle?) {\n        super.onPostCreate(savedInstanceState)\n        drawerToggle.syncState()\n    }\n\n    override fun onOptionsItemSelected(item: MenuItem): Boolean {\n        return if (drawerToggle.onOptionsItemSelected(item)) {\n            true\n        } else {\n            super.onOptionsItemSelected(item)\n        }\n    }\n\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/example/eventapp/MainActivity.kt b/app/src/main/java/com/example/eventapp/MainActivity.kt
+--- a/app/src/main/java/com/example/eventapp/MainActivity.kt	(revision 0ef312e1e1180e49f6bc559dfedaa0bfd31691c0)
++++ b/app/src/main/java/com/example/eventapp/MainActivity.kt	(date 1687205257139)
+@@ -1,5 +1,6 @@
+ package com.example.eventapp
+ 
++import android.os.Build
+ import android.os.Bundle
+ import android.view.LayoutInflater
+ import android.view.Menu
+@@ -15,6 +16,15 @@
+ import com.google.android.material.bottomnavigation.BottomNavigationView
+ import com.google.android.material.navigation.NavigationView
+ import android.widget.Button;
++import androidx.annotation.RequiresApi
++import androidx.recyclerview.widget.RecyclerView
++import com.example.eventapp.models.CountriesWrapper
++import com.example.eventapp.models.EventsWrapper
++import com.example.eventapp.models.embedded.events.embedded.venues.Country
++import com.example.eventapp.ui.adapters.ExpandableAdapter
++import com.google.gson.Gson
++import java.io.File
++
+ 
+ class MainActivity : AppCompatActivity() {
+ 
+@@ -23,7 +33,9 @@
+     private lateinit var bottomNavigationView: BottomNavigationView
+     private lateinit var drawerLayout: DrawerLayout
+     private lateinit var navigationView: NavigationView
++    private lateinit var recyclerView: RecyclerView
+ 
++    @RequiresApi(Build.VERSION_CODES.O)
+     override fun onCreate(savedInstanceState: Bundle?) {
+         super.onCreate(savedInstanceState)
+         setContentView(R.layout.activity_main)
+@@ -148,6 +160,8 @@
+         supportFragmentManager.beginTransaction()
+             .replace(R.id.contentLayout, HomeFragment())
+             .commit()
++
++        setLayout()
+     }
+ 
+     override fun onPrepareOptionsMenu(menu: Menu): Boolean {
+@@ -176,4 +190,19 @@
+         }
+     }
+ 
++    private fun setLayout() {
++        val gson = Gson()
++        val countries =
++            assets.open("countries.json").bufferedReader().use { it.readText() }
++        val countriesModel = gson.fromJson(countries, CountriesWrapper::class.java)
++        setRecyclerView(countriesModel.countries)
++    }
++
++
++    private fun setRecyclerView(countries: ArrayList<Country>) {
++        val adapter = ExpandableAdapter(countries)
++        recyclerView.adapter = adapter
++    }
++
++
+ }
+\ No newline at end of file
+Index: app/src/main/res/layout/expandable.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/res/layout/expandable.xml b/app/src/main/res/layout/expandable.xml
+new file mode 100644
+--- /dev/null	(date 1687199781284)
++++ b/app/src/main/res/layout/expandable.xml	(date 1687199781284)
+@@ -0,0 +1,27 @@
++<?xml version="1.0" encoding="utf-8"?>
++<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
++    xmlns:tools="http://schemas.android.com/tools"
++    android:layout_width="match_parent"
++    android:layout_height="match_parent"
++    tools:context=".ui.notifications.NotificationsFragment">
++
++    <LinearLayout
++        android:layout_width="match_parent"
++        android:layout_height="match_parent"
++        android:orientation="vertical">
++
++        <View
++            android:id="@+id/item_divider"
++            android:layout_width="match_parent"
++            android:layout_height="match_parent"
++            android:background="#D3D3D3" />
++
++        <TextView
++            android:id="@+id/item_title"
++            android:layout_width="match_parent"
++            android:layout_height="match_parent"
++            tools:text="Léon: The Professional" />
++
++
++    </LinearLayout>
++</androidx.constraintlayout.widget.ConstraintLayout>
+\ No newline at end of file
+Index: app/src/main/java/com/example/eventapp/ui/adapters/ExpandableAdapter.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/example/eventapp/ui/adapters/ExpandableAdapter.kt b/app/src/main/java/com/example/eventapp/ui/adapters/ExpandableAdapter.kt
+new file mode 100644
+--- /dev/null	(date 1687202368201)
++++ b/app/src/main/java/com/example/eventapp/ui/adapters/ExpandableAdapter.kt	(date 1687202368201)
+@@ -0,0 +1,61 @@
++package com.example.eventapp.ui.adapters
++
++
++import android.graphics.Movie
++import android.view.LayoutInflater
++import android.view.View
++import android.view.ViewGroup
++import android.widget.ImageView
++import android.widget.TextView
++import androidx.recyclerview.widget.RecyclerView
++import com.example.eventapp.R
++import com.example.eventapp.models.embedded.events.Events
++import com.example.eventapp.models.embedded.events.embedded.venues.Country
++import com.example.eventapp.ui.home.EventListAdapter
++
++
++class ExpandableAdapter(private val countries: ArrayList<Country>) :
++    RecyclerView.Adapter<ExpandableAdapter.EventViewHolder>() {
++
++    override fun onCreateViewHolder(
++        parent: ViewGroup,
++        viewType: Int
++    ): EventViewHolder {
++        val itemView = LayoutInflater.from(parent.context).inflate(
++            R.layout.item_event,
++            parent,
++            false
++        )
++        return EventViewHolder(itemView)
++    }
++
++    override fun onBindViewHolder(holder: EventViewHolder, position: Int) {
++//        val movie: Movie = list.get(position)
++//        // Set movie data
++//        holder.bind(movie)
++//        holder.itemView.setOnClickListener { v ->
++//            // Get the current state of the item
++//            val expanded: Boolean = movie.isExpanded()
++//            // Change the state
++//            movie.setExpanded(!expanded)
++//            // Notify the adapter that item has changed
++//            notifyItemChanged(position)
++//        }
++    }
++
++    override fun getItemCount(): Int {
++        TODO("Not yet implemented")
++    }
++
++
++    inner class EventViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
++//        val expanded: Boolean = itemView.isExpanded()
++
++//        val imageView: ImageView = itemView.findViewById(R.id.thumbnail)
++//        val eventNameTextView: TextView = itemView.findViewById(R.id.eventNameTextView)
++//        val eventDateTextView: TextView = itemView.findViewById(R.id.eventDateTextView)
++//        val ageRestriction: TextView = itemView.findViewById(R.id.ageRestriction)
++//        val genre: TextView = itemView.findViewById(R.id.genre)
++//        val eventDataView: View = itemView.findViewById(R.id.eventData)
++    }
++}
+Index: app/src/main/java/com/example/eventapp/ui/data/countries.json
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/example/eventapp/ui/data/countries.json b/app/src/main/java/com/example/eventapp/ui/data/countries.json
+new file mode 100644
+--- /dev/null	(date 1687202223483)
++++ b/app/src/main/java/com/example/eventapp/ui/data/countries.json	(date 1687202223483)
+@@ -0,0 +1,88 @@
++{
++  "countries": [
++    {
++      "name": "United States",
++      "code": "US"
++    },
++    {
++      "name": "India",
++      "code": "IN"
++    },
++    {
++      "name": "China",
++      "code": "CN"
++    },
++    {
++      "name": "Indonesia",
++      "code": "ID"
++    },
++    {
++      "name": "Pakistan",
++      "code": "PK"
++    },
++    {
++      "name": "Brazil",
++      "code": "BR"
++    },
++    {
++      "name": "Nigeria",
++      "code": "NG"
++    },
++    {
++      "name": "Bangladesh",
++      "code": "BD"
++    },
++    {
++      "name": "Russia",
++      "code": "RU"
++    },
++    {
++      "name": "Mexico",
++      "code": "MX"
++    },
++    {
++      "name": "Japan",
++      "code": "JP"
++    },
++    {
++      "name": "Ethiopia",
++      "code": "ET"
++    },
++    {
++      "name": "Philippines",
++      "code": "PH"
++    },
++    {
++      "name": "Egypt",
++      "code": "EG"
++    },
++    {
++      "name": "Vietnam",
++      "code": "VN"
++    },
++    {
++      "name": "DR Congo",
++      "code": "CD"
++    },
++    {
++      "name": "Turkey",
++      "code": "TR"
++    },
++    {
++      "name": "Iran",
++      "code": "IR"
++    },
++    {
++      "name": "Germany",
++      "code": "DE"
++    },
++    {
++      "name": "Thailand",
++      "code": "TH"
++    },
++    {
++      "name": "United Kingdom",
++      "code": "GB"
++    }
++  ]
++}
+\ No newline at end of file

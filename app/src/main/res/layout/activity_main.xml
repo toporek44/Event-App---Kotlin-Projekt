@@ -4,9 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- Include your main content layout here -->
-
-    <!-- Bottom Navigation View -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigationView"
         android:layout_width="match_parent"
@@ -14,25 +11,25 @@
         android:layout_gravity="bottom"
         app:menu="@menu/bottom_nav_menu" />
 
-    <!-- Drawer Layout -->
+
     <androidx.drawerlayout.widget.DrawerLayout
         android:id="@+id/drawerLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <!-- Main content layout -->
         <FrameLayout
             android:id="@+id/contentLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
-        <!-- Navigation View -->
         <com.google.android.material.navigation.NavigationView
             android:id="@+id/navigationView"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="start"
+            android:paddingBottom="60dp"
             app:menu="@menu/drawer_menu" />
+
 
     </androidx.drawerlayout.widget.DrawerLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

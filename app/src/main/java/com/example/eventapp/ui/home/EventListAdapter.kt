@@ -92,4 +92,6 @@ class EventListAdapter(
         val eventDataView: View = itemView.findViewById(R.id.eventData)
         val addToFav: ImageView = itemView.findViewById(R.id.addToFav)
     }
+
 }
+

@@ -1,0 +1,28 @@
+{
+  "countries": [
+    {
+      "name": "London"
+    },
+    {
+      "name": "Warsaw"
+    },
+    {
+      "name": "Dublin"
+    },
+    {
+      "name": "New York City"
+    },
+    {
+      "name": "Rome"
+    },
+    {
+      "name": "Barcelona"
+    },
+    {
+      "name": "Sydney"
+    },
+    {
+      "name": "Amsterdam"
+    }
+  ]
+}

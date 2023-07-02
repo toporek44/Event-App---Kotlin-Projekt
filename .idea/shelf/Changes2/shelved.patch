@@ -1,0 +1,1376 @@
+Index: app/src/main/java/com/example/eventapp/ui/home/EventListAdapter.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.eventapp.ui.home\r\n\r\n\r\nimport android.content.res.Resources\r\nimport android.graphics.BitmapFactory\r\nimport android.view.LayoutInflater\r\nimport android.view.View\r\nimport android.view.ViewGroup\r\nimport android.widget.ImageView\r\nimport android.widget.TextView\r\nimport androidx.recyclerview.widget.RecyclerView\r\nimport com.example.eventapp.MainActivity\r\nimport com.example.eventapp.R\r\nimport com.example.eventapp.models.embedded.events.Events\r\nimport java.net.HttpURLConnection\r\nimport java.net.URL\r\n\r\nclass EventListAdapter(private val eventList: ArrayList<Events>, private var context: MainActivity) :\r\n    RecyclerView.Adapter<EventListAdapter.EventViewHolder>() {\r\n    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventViewHolder {\r\n        val itemView = LayoutInflater.from(parent.context).inflate(\r\n            R.layout.item_event,\r\n            parent,\r\n            false\r\n        )\r\n        return EventViewHolder(itemView)\r\n    }\r\n\r\n    override fun onBindViewHolder(holder: EventViewHolder, position: Int) {\r\n        val newWidth = Resources.getSystem().displayMetrics.widthPixels.minus(holder.imageView.width+550)\r\n        holder.eventDataView.getLayoutParams().width = newWidth\r\n\r\n        val currentItem = eventList[position]\r\n        val date = currentItem.dates?.start\r\n        val messageString = if(date?.localDate!=null && date.localTime!=null) \"${date.localDate} ${date.localTime.toString().substring(0,5)}\" else \"TBD\"\r\n\r\n        holder.eventNameTextView.text = currentItem.name\r\n        holder.genre.text = currentItem.classifications.first().genre?.name ?: \"TBD when\"\r\n        holder.ageRestriction.text =\r\n            if (currentItem.ageRestrictions?.legalAgeEnforced == true) \"+18\" else \"\"\r\n        holder.eventDateTextView.text = messageString\r\n        holder.addToFav.setImageResource(R.drawable.ic_add_to_fav_foreground)\r\n\r\n        holder.addToFav.setOnClickListener {\r\n            if (context.checkForFav(currentItem)){\r\n                context.deleteEvent(currentItem)\r\n                holder.addToFav.setImageResource(R.drawable.ic_add_to_fav_foreground)\r\n            }else{\r\n                context.saveEvent(currentItem)\r\n                holder.addToFav.setImageResource(R.drawable.ic_added_to_fav_foreground)\r\n            }\r\n        }\r\n        // city\r\n        // country\r\n        // genreId\r\n        // startDateTime\r\n        // keyword\r\n\r\n        Thread {\r\n            try {\r\n                val url = URL(currentItem.images.first().url)\r\n                val connection = url.openConnection() as HttpURLConnection\r\n                connection.doInput = true\r\n                connection.connect()\r\n\r\n                val inputStream = connection.inputStream\r\n                val bitmap = BitmapFactory.decodeStream(inputStream)\r\n\r\n                holder.imageView.post {\r\n                    holder.imageView.setImageBitmap(bitmap)\r\n                }\r\n            } catch (e: Exception) {\r\n                e.printStackTrace()\r\n            }\r\n        }.start()\r\n    }\r\n\r\n    override fun getItemCount() = eventList.size\r\n\r\n    inner class EventViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {\r\n        val imageView: ImageView = itemView.findViewById(R.id.thumbnail)\r\n        val eventNameTextView: TextView = itemView.findViewById(R.id.eventNameTextView)\r\n        val eventDateTextView: TextView = itemView.findViewById(R.id.eventDateTextView)\r\n        val ageRestriction: TextView = itemView.findViewById(R.id.ageRestriction)\r\n        val genre: TextView = itemView.findViewById(R.id.genre)\r\n        val eventDataView: View = itemView.findViewById(R.id.eventData)\r\n        val addToFav: ImageView = itemView.findViewById(R.id.addToFav)\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/example/eventapp/ui/home/EventListAdapter.kt b/app/src/main/java/com/example/eventapp/ui/home/EventListAdapter.kt
+--- a/app/src/main/java/com/example/eventapp/ui/home/EventListAdapter.kt	(revision 207311f65a413ee3d449617ca9be0033905c6ece)
++++ b/app/src/main/java/com/example/eventapp/ui/home/EventListAdapter.kt	(date 1688295105905)
+@@ -15,7 +15,10 @@
+ import java.net.HttpURLConnection
+ import java.net.URL
+ 
+-class EventListAdapter(private val eventList: ArrayList<Events>, private var context: MainActivity) :
++class EventListAdapter(
++    private val eventList: ArrayList<Events>,
++    private var context: MainActivity
++) :
+     RecyclerView.Adapter<EventListAdapter.EventViewHolder>() {
+     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventViewHolder {
+         val itemView = LayoutInflater.from(parent.context).inflate(
+@@ -27,12 +30,16 @@
+     }
+ 
+     override fun onBindViewHolder(holder: EventViewHolder, position: Int) {
+-        val newWidth = Resources.getSystem().displayMetrics.widthPixels.minus(holder.imageView.width+550)
++        val newWidth =
++            Resources.getSystem().displayMetrics.widthPixels.minus(holder.imageView.width + 550)
+         holder.eventDataView.getLayoutParams().width = newWidth
+ 
+         val currentItem = eventList[position]
+         val date = currentItem.dates?.start
+-        val messageString = if(date?.localDate!=null && date.localTime!=null) "${date.localDate} ${date.localTime.toString().substring(0,5)}" else "TBD"
++        val messageString =
++            if (date?.localDate != null && date.localTime != null) "${date.localDate} ${
++                date.localTime.toString().substring(0, 5)
++            }" else "TBD"
+ 
+         holder.eventNameTextView.text = currentItem.name
+         holder.genre.text = currentItem.classifications.first().genre?.name ?: "TBD when"
+@@ -42,19 +49,14 @@
+         holder.addToFav.setImageResource(R.drawable.ic_add_to_fav_foreground)
+ 
+         holder.addToFav.setOnClickListener {
+-            if (context.checkForFav(currentItem)){
++            if (context.checkForFav(currentItem)) {
+                 context.deleteEvent(currentItem)
+                 holder.addToFav.setImageResource(R.drawable.ic_add_to_fav_foreground)
+-            }else{
++            } else {
+                 context.saveEvent(currentItem)
+                 holder.addToFav.setImageResource(R.drawable.ic_added_to_fav_foreground)
+             }
+         }
+-        // city
+-        // country
+-        // genreId
+-        // startDateTime
+-        // keyword
+ 
+         Thread {
+             try {
+Index: app/src/main/res/layout/fragment_dashboard.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\n<androidx.constraintlayout.widget.ConstraintLayout xmlns:android=\"http://schemas.android.com/apk/res/android\"\n    xmlns:app=\"http://schemas.android.com/apk/res-auto\"\n    xmlns:tools=\"http://schemas.android.com/tools\"\n    android:layout_width=\"match_parent\"\n    android:layout_height=\"match_parent\"\n    tools:context=\".ui.dashboard.DashboardFragment\">\n\n    <TextView\n        android:id=\"@+id/text_dashboard\"\n        android:layout_width=\"match_parent\"\n        android:layout_height=\"wrap_content\"\n        android:layout_marginStart=\"8dp\"\n        android:layout_marginTop=\"8dp\"\n        android:layout_marginEnd=\"8dp\"\n        android:textAlignment=\"center\"\n        android:textSize=\"20sp\"\n        app:layout_constraintBottom_toBottomOf=\"parent\"\n        app:layout_constraintEnd_toEndOf=\"parent\"\n        app:layout_constraintStart_toStartOf=\"parent\"\n        app:layout_constraintTop_toTopOf=\"parent\" />\n</androidx.constraintlayout.widget.ConstraintLayout>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/res/layout/fragment_dashboard.xml b/app/src/main/res/layout/fragment_dashboard.xml
+--- a/app/src/main/res/layout/fragment_dashboard.xml	(revision 207311f65a413ee3d449617ca9be0033905c6ece)
++++ b/app/src/main/res/layout/fragment_dashboard.xml	(date 1688295347128)
+@@ -19,4 +19,10 @@
+         app:layout_constraintEnd_toEndOf="parent"
+         app:layout_constraintStart_toStartOf="parent"
+         app:layout_constraintTop_toTopOf="parent" />
++
++    <androidx.recyclerview.widget.RecyclerView
++        android:id="@+id/recyclerView"
++        android:layout_width="match_parent"
++        android:layout_height="match_parent"
++        app:layoutManager="LinearLayoutManager" />
+ </androidx.constraintlayout.widget.ConstraintLayout>
+\ No newline at end of file
+Index: app/src/main/java/com/example/eventapp/ui/dashboard/DashboardFragment.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.eventapp.ui.dashboard\n\nimport android.os.Bundle\nimport android.view.LayoutInflater\nimport android.view.View\nimport android.view.ViewGroup\nimport android.widget.TextView\nimport androidx.fragment.app.Fragment\nimport androidx.lifecycle.ViewModelProvider\nimport com.example.eventapp.MainActivity\nimport com.example.eventapp.databinding.FragmentDashboardBinding\n\nclass DashboardFragment : Fragment() {\n\n    private var _binding: FragmentDashboardBinding? = null\n\n    // This property is only valid between onCreateView and\n    // onDestroyView.\n    private val binding get() = _binding!!\n\n    override fun onCreateView(\n        inflater: LayoutInflater,\n        container: ViewGroup?,\n        savedInstanceState: Bundle?\n    ): View {\n        val dashboardViewModel =\n            ViewModelProvider(this).get(DashboardViewModel::class.java)\n\n        _binding = FragmentDashboardBinding.inflate(inflater, container, false)\n        val root: View = binding.root\n\n        (activity as? MainActivity)?.setDrawerVisible(true)\n\n        val textView: TextView = binding.textDashboard\n        dashboardViewModel.text.observe(viewLifecycleOwner) {\n            textView.text = it\n        }\n        return root\n    }\n\n    override fun onDestroyView() {\n        super.onDestroyView()\n        _binding = null\n    }\n}\n\n\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/example/eventapp/ui/dashboard/DashboardFragment.kt b/app/src/main/java/com/example/eventapp/ui/dashboard/DashboardFragment.kt
+--- a/app/src/main/java/com/example/eventapp/ui/dashboard/DashboardFragment.kt	(revision 207311f65a413ee3d449617ca9be0033905c6ece)
++++ b/app/src/main/java/com/example/eventapp/ui/dashboard/DashboardFragment.kt	(date 1688295476466)
+@@ -7,12 +7,20 @@
+ import android.widget.TextView
+ import androidx.fragment.app.Fragment
+ import androidx.lifecycle.ViewModelProvider
++import androidx.recyclerview.widget.LinearLayoutManager
++import androidx.recyclerview.widget.RecyclerView
+ import com.example.eventapp.MainActivity
++import com.example.eventapp.R
+ import com.example.eventapp.databinding.FragmentDashboardBinding
++import com.example.eventapp.models.EventsWrapper
++import com.example.eventapp.models.embedded.events.Events
++import com.example.eventapp.ui.home.EventListAdapter
++import com.google.gson.Gson
+ 
+ class DashboardFragment : Fragment() {
+ 
+     private var _binding: FragmentDashboardBinding? = null
++    private lateinit var recyclerView: RecyclerView
+ 
+     // This property is only valid between onCreateView and
+     // onDestroyView.
+@@ -31,17 +39,40 @@
+ 
+         (activity as? MainActivity)?.setDrawerVisible(true)
+ 
+-        val textView: TextView = binding.textDashboard
+-        dashboardViewModel.text.observe(viewLifecycleOwner) {
+-            textView.text = it
+-        }
++
+         return root
+     }
+ 
++    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
++        super.onViewCreated(view, savedInstanceState)
++
++        recyclerView = view.findViewById(R.id.recyclerView)
++        recyclerView.layoutManager = LinearLayoutManager(requireContext())
++
++        val response =
++            com.example.eventapp.ui.utils.run(
++                "https://app.ticketmaster.com/discovery/v2/events.json?apikey=rClsJ88hPEAEBq7CbXw0nDAD3KmP5wdu&size=10&sort=random",
++                ::setLayout,
++                activity
++            )
++
++    }
++
+     override fun onDestroyView() {
+         super.onDestroyView()
+         _binding = null
+     }
++
++    private fun setLayout(responseBody: String?) {
++        val gson = Gson()
++        val testModel = gson.fromJson(responseBody, EventsWrapper::class.java)
++        testModel.Embedded?.let { setRecyclerView(it.events) }
++    }
++
++    private fun setRecyclerView(eventList: ArrayList<Events>) {
++        val adapter = EventListAdapter(eventList, context as MainActivity)
++        recyclerView.adapter = adapter
++    }
+ }
+ 
+ 
+Index: app/src/main/java/com/example/eventapp/MainActivity.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.eventapp\n\nimport android.content.Context\nimport android.os.Bundle\nimport android.view.LayoutInflater\nimport android.view.Menu\nimport android.view.MenuItem\nimport android.view.View\nimport android.widget.CheckBox\nimport androidx.appcompat.app.ActionBarDrawerToggle\nimport androidx.appcompat.app.AppCompatActivity\nimport androidx.drawerlayout.widget.DrawerLayout\nimport com.example.eventapp.ui.dashboard.DashboardFragment\nimport com.example.eventapp.ui.home.HomeFragment\nimport com.example.eventapp.ui.notifications.NotificationsFragment\nimport com.google.android.material.bottomnavigation.BottomNavigationView\nimport com.google.android.material.navigation.NavigationView\nimport android.widget.Button\nimport com.example.eventapp.models.embedded.events.Events\n\nclass MainActivity : AppCompatActivity() {\n\n    private var isDrawerVisible: Boolean = false\n    private lateinit var drawerToggle: ActionBarDrawerToggle\n    private lateinit var bottomNavigationView: BottomNavigationView\n    private lateinit var drawerLayout: DrawerLayout\n    private lateinit var navigationView: NavigationView\n\n    override fun onCreate(savedInstanceState: Bundle?) {\n        super.onCreate(savedInstanceState)\n        setContentView(R.layout.activity_main)\n\n        bottomNavigationView = findViewById(R.id.bottomNavigationView)\n        drawerLayout = findViewById(R.id.drawerLayout)\n        navigationView = findViewById(R.id.navigationView)\n        drawerToggle = ActionBarDrawerToggle(\n            this,\n            drawerLayout,\n            R.string.drawer_open,\n            R.string.drawer_close\n        )\n\n        val menu = navigationView.getMenu()\n        val filterItemMenu: MenuItem? = menu.findItem(R.id.filter_button)\n        val filterButton: Button? = filterItemMenu?.actionView?.findViewById<Button>(R.id.button)\n        filterButton?.apply {\n            text = \"Filtruj\"\n        }\n\n\n        val buttonLayouts =\n            listOf(R.layout.widget_button, R.layout.widget_button, R.layout.widget_button)\n\n        // Iterate over the button layout IDs\n        for (buttonLayoutId in buttonLayouts) {\n            // Inflate the XML layout for the button widget\n            val inflater: LayoutInflater = LayoutInflater.from(this)\n            val buttonLayout: View = inflater.inflate(buttonLayoutId, null)\n\n            // Create a MenuItem and add the button layout as its action view\n            val menuItem: MenuItem = menu.add(Menu.NONE, Menu.NONE, Menu.NONE, \"Button\")\n            menuItem.actionView = buttonLayout\n\n            // Set a click listener for the button\n            val button: Button = buttonLayout.findViewById(R.id.button)\n            button.setOnClickListener {\n                // Handle button click here\n            }\n        }\n\n\n        drawerLayout.addDrawerListener(drawerToggle)\n        supportActionBar?.setDisplayHomeAsUpEnabled(false)\n        supportActionBar?.setHomeButtonEnabled(false)\n\n        // Set listener for drawer menu item selections\n        navigationView.setNavigationItemSelectedListener { menuItem ->\n            when (menuItem.itemId) {\n                R.id.nav_checkbox -> {\n                    val checkBox = menuItem.actionView?.findViewById<CheckBox>(R.id.checkBox)\n                    checkBox?.setOnCheckedChangeListener { _, isChecked ->\n                        if (isChecked) {\n                            // Checkbox is checked\n                        } else {\n                            // Checkbox is unchecked\n                        }\n                    }\n                    true\n                }\n\n\n                R.id.nav_button -> {\n                    val button = menuItem.actionView?.findViewById<Button>(R.id.button)\n                    button?.setOnClickListener { l ->\n                    }\n                    true\n                }\n\n                R.id.filter_button -> {\n                    val button = menuItem.actionView?.findViewById<Button>(R.id.button)\n                    button?.apply {\n                        text = \"Filtruj\"\n                    }\n                    button?.setText(\"test\")\n                    button?.setOnClickListener { l ->\n                    }\n                    true\n                }\n\n                else -> false\n            }\n        }\n\n        bottomNavigationView.setOnNavigationItemSelectedListener { menuItem ->\n            when (menuItem.itemId) {\n                R.id.navigation_home -> {\n                    // Replace the content layout with Fragment1\n                    supportFragmentManager.beginTransaction()\n                        .replace(R.id.contentLayout, HomeFragment())\n                        .commit()\n                    supportActionBar?.setDisplayHomeAsUpEnabled(false)\n\n                    true\n                }\n\n                R.id.navigation_dashboard -> {\n                    // Replace the content layout with Fragment2\n                    supportFragmentManager.beginTransaction()\n                        .replace(R.id.contentLayout, DashboardFragment())\n                        .commit()\n                    supportActionBar?.setDisplayHomeAsUpEnabled(true)\n                    true\n                }\n\n                R.id.navigation_notifications -> {\n                    // Replace the content layout with Fragment2\n                    supportFragmentManager.beginTransaction()\n                        .replace(R.id.contentLayout, NotificationsFragment())\n                        .commit()\n                    supportActionBar?.setDisplayHomeAsUpEnabled(false)\n                    true\n                }\n\n                else -> false\n            }\n        }\n\n        // Set the initial fragment\n        navigationView.menu.getItem(0).isChecked = true\n        supportFragmentManager.beginTransaction()\n            .replace(R.id.contentLayout, HomeFragment())\n            .commit()\n    }\n\n    override fun onPrepareOptionsMenu(menu: Menu): Boolean {\n        drawerToggle.isDrawerIndicatorEnabled = this.isDrawerVisible\n        return super.onPrepareOptionsMenu(menu)\n    }\n\n    fun setDrawerVisible(visible: Boolean) {\n        this.isDrawerVisible = visible\n        invalidateOptionsMenu()\n        drawerLayout.setDrawerLockMode(\n            if (visible) DrawerLayout.LOCK_MODE_UNLOCKED else DrawerLayout.LOCK_MODE_LOCKED_CLOSED\n        )\n    }\n\n    fun saveEvent(event:Events) {\n        getPreferences(Context.MODE_PRIVATE).edit().putString(\"${event.id}\", event.toString()).apply()\n    }\n\n    fun deleteEvent(event: Events) {\n        getPreferences(Context.MODE_PRIVATE).edit().remove(event.id).apply()\n    }\n\n    fun checkForFav(event: Events): Boolean {\n        return readEvents(event)!=\"\"\n    }\n\n    private fun readEvents(event:Events): String? {\n        return getPreferences(Context.MODE_PRIVATE).getString(\"${event.id}\", \"\")\n    }\n\n    override fun onPostCreate(savedInstanceState: Bundle?) {\n        super.onPostCreate(savedInstanceState)\n        drawerToggle.syncState()\n    }\n\n    override fun onOptionsItemSelected(item: MenuItem): Boolean {\n        return if (drawerToggle.onOptionsItemSelected(item)) {\n            true\n        } else {\n            super.onOptionsItemSelected(item)\n        }\n    }\n\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/example/eventapp/MainActivity.kt b/app/src/main/java/com/example/eventapp/MainActivity.kt
+--- a/app/src/main/java/com/example/eventapp/MainActivity.kt	(revision 207311f65a413ee3d449617ca9be0033905c6ece)
++++ b/app/src/main/java/com/example/eventapp/MainActivity.kt	(date 1688295497817)
+@@ -1,11 +1,11 @@
+ package com.example.eventapp
+ 
++import android.os.Build
+ import android.content.Context
++
+ import android.os.Bundle
+-import android.view.LayoutInflater
+ import android.view.Menu
+ import android.view.MenuItem
+-import android.view.View
+ import android.widget.CheckBox
+ import androidx.appcompat.app.ActionBarDrawerToggle
+ import androidx.appcompat.app.AppCompatActivity
+@@ -15,9 +15,24 @@
+ import com.example.eventapp.ui.notifications.NotificationsFragment
+ import com.google.android.material.bottomnavigation.BottomNavigationView
+ import com.google.android.material.navigation.NavigationView
+-import android.widget.Button
++import android.widget.Button;
++import androidx.recyclerview.widget.LinearLayoutManager
++import androidx.recyclerview.widget.SimpleItemAnimator
+ import com.example.eventapp.models.embedded.events.Events
+ 
++import androidx.annotation.RequiresApi
++import androidx.core.view.ViewCompat
++import androidx.recyclerview.widget.RecyclerView
++import com.example.eventapp.models.CountriesWrapper
++import com.example.eventapp.models.GenresWrapper
++import com.example.eventapp.models.shared.FilterItem
++import com.example.eventapp.models.shared.FilterItemData
++import com.example.eventapp.ui.adapters.ExpandableAdapter
++import com.example.eventapp.ui.utils.getCheckedItems
++import com.example.eventapp.ui.utils.saveCheckedItems
++import com.google.gson.Gson
++
++
+ class MainActivity : AppCompatActivity() {
+ 
+     private var isDrawerVisible: Boolean = false
+@@ -25,7 +40,9 @@
+     private lateinit var bottomNavigationView: BottomNavigationView
+     private lateinit var drawerLayout: DrawerLayout
+     private lateinit var navigationView: NavigationView
++    private lateinit var recyclerView: RecyclerView
+ 
++    @RequiresApi(Build.VERSION_CODES.O)
+     override fun onCreate(savedInstanceState: Bundle?) {
+         super.onCreate(savedInstanceState)
+         setContentView(R.layout.activity_main)
+@@ -39,35 +56,41 @@
+             R.string.drawer_open,
+             R.string.drawer_close
+         )
+-
++        val context = this
+         val menu = navigationView.getMenu()
+         val filterItemMenu: MenuItem? = menu.findItem(R.id.filter_button)
++        val clearFiltersItemMenu: MenuItem? = menu.findItem(R.id.clear_filters)
+         val filterButton: Button? = filterItemMenu?.actionView?.findViewById<Button>(R.id.button)
++        val clearFiltersButton: Button? =
++            clearFiltersItemMenu?.actionView?.findViewById<Button>(R.id.button)
+         filterButton?.apply {
+             text = "Filtruj"
++            setOnClickListener { l ->
++                val countries = getCheckedItems(context, "countries")
++                val categories = getCheckedItems(context, "categories")
++                println(countries)
++            }
+         }
+-
++        val filters = arrayListOf(
++            FilterItem("Countries", getCountries()),
++            FilterItem("Categories", getCategories()),
++        )
+ 
+-        val buttonLayouts =
+-            listOf(R.layout.widget_button, R.layout.widget_button, R.layout.widget_button)
+-
+-        // Iterate over the button layout IDs
+-        for (buttonLayoutId in buttonLayouts) {
+-            // Inflate the XML layout for the button widget
+-            val inflater: LayoutInflater = LayoutInflater.from(this)
+-            val buttonLayout: View = inflater.inflate(buttonLayoutId, null)
+-
+-            // Create a MenuItem and add the button layout as its action view
+-            val menuItem: MenuItem = menu.add(Menu.NONE, Menu.NONE, Menu.NONE, "Button")
+-            menuItem.actionView = buttonLayout
+-
+-            // Set a click listener for the button
+-            val button: Button = buttonLayout.findViewById(R.id.button)
+-            button.setOnClickListener {
+-                // Handle button click here
++        clearFiltersButton?.apply {
++            text = "Wyczysc Filtry"
++            setOnClickListener { l ->
++                val emptyList = arrayListOf<String>()
++                saveCheckedItems(context, emptyList, "countries")
++                saveCheckedItems(context, emptyList, "categories")
++                setRecyclerView(filters)
+             }
+         }
+ 
++        val recyclerViewContainer = menu.findItem(R.id.countries)
++        recyclerView =
++            recyclerViewContainer?.actionView?.findViewById<RecyclerView>(R.id.filterContent)!!
++        (recyclerView.itemAnimator as SimpleItemAnimator?)!!.supportsChangeAnimations = false
++        recyclerView.layoutManager = LinearLayoutManager(this)
+ 
+         drawerLayout.addDrawerListener(drawerToggle)
+         supportActionBar?.setDisplayHomeAsUpEnabled(false)
+@@ -76,33 +99,12 @@
+         // Set listener for drawer menu item selections
+         navigationView.setNavigationItemSelectedListener { menuItem ->
+             when (menuItem.itemId) {
+-                R.id.nav_checkbox -> {
+-                    val checkBox = menuItem.actionView?.findViewById<CheckBox>(R.id.checkBox)
+-                    checkBox?.setOnCheckedChangeListener { _, isChecked ->
+-                        if (isChecked) {
+-                            // Checkbox is checked
+-                        } else {
+-                            // Checkbox is unchecked
+-                        }
+-                    }
+-                    true
+-                }
+-
+-
+-                R.id.nav_button -> {
+-                    val button = menuItem.actionView?.findViewById<Button>(R.id.button)
+-                    button?.setOnClickListener { l ->
+-                    }
+-                    true
+-                }
+-
+                 R.id.filter_button -> {
+                     val button = menuItem.actionView?.findViewById<Button>(R.id.button)
+-                    button?.apply {
+-                        text = "Filtruj"
+-                    }
+-                    button?.setText("test")
+                     button?.setOnClickListener { l ->
++                        println("TEST")
++                        val countries = getCheckedItems(this, "countries")
++                        println(countries)
+                     }
+                     true
+                 }
+@@ -111,6 +113,7 @@
+             }
+         }
+ 
++
+         bottomNavigationView.setOnNavigationItemSelectedListener { menuItem ->
+             when (menuItem.itemId) {
+                 R.id.navigation_home -> {
+@@ -145,11 +148,33 @@
+             }
+         }
+ 
++
+         // Set the initial fragment
+         navigationView.menu.getItem(0).isChecked = true
+         supportFragmentManager.beginTransaction()
+             .replace(R.id.contentLayout, HomeFragment())
+             .commit()
++
++
++        setRecyclerView(filters)
++
++    }
++
++    fun saveEvent(event: Events) {
++        getPreferences(Context.MODE_PRIVATE).edit().putString("${event.id}", event.toString())
++            .apply()
++    }
++
++    fun deleteEvent(event: Events) {
++        getPreferences(Context.MODE_PRIVATE).edit().remove(event.id).apply()
++    }
++
++    fun checkForFav(event: Events): Boolean {
++        return readEvents(event) != ""
++    }
++
++    private fun readEvents(event: Events): String? {
++        return getPreferences(Context.MODE_PRIVATE).getString("${event.id}", "")
+     }
+ 
+     override fun onPrepareOptionsMenu(menu: Menu): Boolean {
+@@ -165,22 +190,6 @@
+         )
+     }
+ 
+-    fun saveEvent(event:Events) {
+-        getPreferences(Context.MODE_PRIVATE).edit().putString("${event.id}", event.toString()).apply()
+-    }
+-
+-    fun deleteEvent(event: Events) {
+-        getPreferences(Context.MODE_PRIVATE).edit().remove(event.id).apply()
+-    }
+-
+-    fun checkForFav(event: Events): Boolean {
+-        return readEvents(event)!=""
+-    }
+-
+-    private fun readEvents(event:Events): String? {
+-        return getPreferences(Context.MODE_PRIVATE).getString("${event.id}", "")
+-    }
+-
+     override fun onPostCreate(savedInstanceState: Bundle?) {
+         super.onPostCreate(savedInstanceState)
+         drawerToggle.syncState()
+@@ -194,4 +203,41 @@
+         }
+     }
+ 
++    private fun getCountries(): MutableList<FilterItemData> {
++
++        val gson = Gson()
++        val countries =
++            assets.open("countries.json").bufferedReader().use { it.readText() }
++
++        val countriesArray = gson.fromJson(countries, CountriesWrapper::class.java).countries
++        val mappedCountries = countriesArray.map { country ->
++            FilterItemData(country.name, country.countryCode, "countries")
++        }.toMutableList()
++
++        return mappedCountries
++    }
++
++    private fun getCategories(): MutableList<FilterItemData> {
++
++        val gson = Gson()
++        val genres =
++            assets.open("genres.json").bufferedReader().use { it.readText() }
++
++        val genresArray = gson.fromJson(genres, GenresWrapper::class.java).genres
++        val mappedGenres = genresArray.map { genre ->
++            FilterItemData(genre.name, genre.id, "categories")
++        }.toMutableList()
++
++        return mappedGenres
++    }
++
++
++    private fun setRecyclerView(filters: ArrayList<FilterItem>) {
++        val adapter = ExpandableAdapter(this, filters)
++        recyclerView.adapter = adapter
++        ViewCompat.setNestedScrollingEnabled(recyclerView, false)
++
++    }
++
++
+ }
+\ No newline at end of file
+Index: app/src/main/res/layout/activity_main.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\n<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android=\"http://schemas.android.com/apk/res/android\"\n    xmlns:app=\"http://schemas.android.com/apk/res-auto\"\n    android:layout_width=\"match_parent\"\n    android:layout_height=\"match_parent\">\n\n    <!-- Include your main content layout here -->\n\n    <!-- Bottom Navigation View -->\n    <com.google.android.material.bottomnavigation.BottomNavigationView\n        android:id=\"@+id/bottomNavigationView\"\n        android:layout_width=\"match_parent\"\n        android:layout_height=\"wrap_content\"\n        android:layout_gravity=\"bottom\"\n        app:menu=\"@menu/bottom_nav_menu\" />\n\n    <!-- Drawer Layout -->\n    <androidx.drawerlayout.widget.DrawerLayout\n        android:id=\"@+id/drawerLayout\"\n        android:layout_width=\"match_parent\"\n        android:layout_height=\"match_parent\">\n\n        <!-- Main content layout -->\n        <FrameLayout\n            android:id=\"@+id/contentLayout\"\n            android:layout_width=\"match_parent\"\n            android:layout_height=\"match_parent\" />\n\n        <!-- Navigation View -->\n        <com.google.android.material.navigation.NavigationView\n            android:id=\"@+id/navigationView\"\n            android:layout_width=\"wrap_content\"\n            android:layout_height=\"match_parent\"\n            android:layout_gravity=\"start\"\n            app:menu=\"@menu/drawer_menu\" />\n\n    </androidx.drawerlayout.widget.DrawerLayout>\n</androidx.coordinatorlayout.widget.CoordinatorLayout>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/res/layout/activity_main.xml b/app/src/main/res/layout/activity_main.xml
+--- a/app/src/main/res/layout/activity_main.xml	(revision 207311f65a413ee3d449617ca9be0033905c6ece)
++++ b/app/src/main/res/layout/activity_main.xml	(date 1688295541977)
+@@ -14,25 +14,25 @@
+         android:layout_gravity="bottom"
+         app:menu="@menu/bottom_nav_menu" />
+ 
++    <FrameLayout
++        android:id="@+id/contentLayout"
++        android:layout_width="match_parent"
++        android:layout_height="match_parent" />
++
+     <!-- Drawer Layout -->
+     <androidx.drawerlayout.widget.DrawerLayout
+         android:id="@+id/drawerLayout"
+         android:layout_width="match_parent"
+         android:layout_height="match_parent">
+ 
+-        <!-- Main content layout -->
+-        <FrameLayout
+-            android:id="@+id/contentLayout"
+-            android:layout_width="match_parent"
+-            android:layout_height="match_parent" />
+-
+-        <!-- Navigation View -->
+         <com.google.android.material.navigation.NavigationView
+             android:id="@+id/navigationView"
+             android:layout_width="wrap_content"
+             android:layout_height="match_parent"
+             android:layout_gravity="start"
++            android:paddingBottom="60dp"
+             app:menu="@menu/drawer_menu" />
+ 
++
+     </androidx.drawerlayout.widget.DrawerLayout>
+ </androidx.coordinatorlayout.widget.CoordinatorLayout>
+\ No newline at end of file
+Index: app/src/main/java/com/example/eventapp/models/shared/FilterItemData.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/example/eventapp/models/shared/FilterItemData.kt b/app/src/main/java/com/example/eventapp/models/shared/FilterItemData.kt
+new file mode 100644
+--- /dev/null	(date 1688291405772)
++++ b/app/src/main/java/com/example/eventapp/models/shared/FilterItemData.kt	(date 1688291405772)
+@@ -0,0 +1,11 @@
++package com.example.eventapp.models.shared
++
++import com.google.gson.annotations.SerializedName
++
++data class FilterItemData(
++    @SerializedName("name") var name: String? = null,
++    @SerializedName("value") var value: String? = null,
++    @SerializedName("key") var key: String,
++
++    )
++
+Index: app/src/main/res/layout/widget_button.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><Button xmlns:android=\"http://schemas.android.com/apk/res/android\"\n    android:id=\"@+id/button\"\n    android:layout_width=\"wrap_content\"\n    android:layout_height=\"match_parent\"\n    android:text=\"button\" />
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/res/layout/widget_button.xml b/app/src/main/res/layout/widget_button.xml
+--- a/app/src/main/res/layout/widget_button.xml	(revision 207311f65a413ee3d449617ca9be0033905c6ece)
++++ b/app/src/main/res/layout/widget_button.xml	(date 1687209700222)
+@@ -1,5 +1,5 @@
+ <Button xmlns:android="http://schemas.android.com/apk/res/android"
+     android:id="@+id/button"
+-    android:layout_width="wrap_content"
++    android:layout_width="match_parent"
+     android:layout_height="match_parent"
+     android:text="button" />
+\ No newline at end of file
+Index: app/src/main/java/com/example/eventapp/models/shared/Genre.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.eventapp.models.shared\n\nimport com.google.gson.annotations.SerializedName\n\n\ndata class Genre(\n\n    @SerializedName(\"id\") var id: String? = null,\n    @SerializedName(\"name\") var name: String? = null\n\n)
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/example/eventapp/models/shared/Genre.kt b/app/src/main/java/com/example/eventapp/models/shared/Genre.kt
+--- a/app/src/main/java/com/example/eventapp/models/shared/Genre.kt	(revision 207311f65a413ee3d449617ca9be0033905c6ece)
++++ b/app/src/main/java/com/example/eventapp/models/shared/Genre.kt	(date 1688289698313)
+@@ -4,7 +4,7 @@
+ 
+ 
+ data class Genre(
+-
++    var expanded: Boolean = false,
+     @SerializedName("id") var id: String? = null,
+     @SerializedName("name") var name: String? = null
+ 
+Index: app/src/main/assets/countries.json
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/assets/countries.json b/app/src/main/assets/countries.json
+new file mode 100644
+--- /dev/null	(date 1688285694041)
++++ b/app/src/main/assets/countries.json	(date 1688285694041)
+@@ -0,0 +1,52 @@
++{
++  "countries": [
++    {
++      "name": "United States",
++      "countryCode": "US"
++    },
++    {
++      "name": "India",
++      "countryCode": "IN"
++    },
++    {
++      "name": "China",
++      "countryCode": "CN"
++    },
++    {
++      "name": "Indonesia",
++      "countryCode": "ID"
++    },
++    {
++      "name": "Pakistan",
++      "countryCode": "PK"
++    },
++    {
++      "name": "Brazil",
++      "countryCode": "BR"
++    },
++    {
++      "name": "Nigeria",
++      "countryCode": "NG"
++    },
++    {
++      "name": "Bangladesh",
++      "countryCode": "BD"
++    },
++    {
++      "name": "Russia",
++      "countryCode": "RU"
++    },
++    {
++      "name": "Mexico",
++      "countryCode": "MX"
++    },
++    {
++      "name": "Japan",
++      "countryCode": "JP"
++    },
++    {
++      "name": "Ethiopia",
++      "countryCode": "ET"
++    }
++  ]
++}
+Index: app/src/main/res/menu/drawer_menu.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><menu xmlns:android=\"http://schemas.android.com/apk/res/android\"\r\n    xmlns:app=\"http://schemas.android.com/apk/res-auto\">\r\n    <group\r\n        android:id=\"@+id/test\"\r\n        android:checkableBehavior=\"single\">\r\n        <item\r\n            android:id=\"@+id/nav_checkbox\"\r\n            android:title=\"CheckBox\"\r\n            app:actionLayout=\"@layout/widget_check\" />\r\n\r\n        <item\r\n            android:id=\"@+id/nav_button\"\r\n            android:title=\"Button\"\r\n            app:actionLayout=\"@layout/widget_button\" />\r\n\r\n        <item\r\n            android:id=\"@+id/filter_button\"\r\n            android:title=\"Button\"\r\n            app:actionLayout=\"@layout/widget_button\" />\r\n    </group>\r\n</menu>\r\n\r\n\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/res/menu/drawer_menu.xml b/app/src/main/res/menu/drawer_menu.xml
+--- a/app/src/main/res/menu/drawer_menu.xml	(revision 207311f65a413ee3d449617ca9be0033905c6ece)
++++ b/app/src/main/res/menu/drawer_menu.xml	(date 1688292681990)
+@@ -1,23 +1,25 @@
+ <menu xmlns:android="http://schemas.android.com/apk/res/android"
+-    xmlns:app="http://schemas.android.com/apk/res-auto">
++    xmlns:app="http://schemas.android.com/apk/res-auto"
++    xmlns:tools="http://schemas.android.com/tools"
++    android:layout_height="match_parent">
+     <group
+         android:id="@+id/test"
+-        android:checkableBehavior="single">
+-        <item
+-            android:id="@+id/nav_checkbox"
+-            android:title="CheckBox"
+-            app:actionLayout="@layout/widget_check" />
+-
++        android:layout_height="match_parent">
+         <item
+-            android:id="@+id/nav_button"
+-            android:title="Button"
+-            app:actionLayout="@layout/widget_button" />
+-
++            android:id="@+id/countries"
++            app:actionLayout="@layout/filters"
++            tools:ignore="MenuTitle" />
+         <item
+             android:id="@+id/filter_button"
+-            android:title="Button"
+-            app:actionLayout="@layout/widget_button" />
++            app:actionLayout="@layout/widget_button"
++            tools:ignore="MenuTitle" />
++        <item
++            android:id="@+id/clear_filters"
++            app:actionLayout="@layout/widget_button"
++            tools:ignore="MenuTitle" />
+     </group>
++
++
+ </menu>
+ 
+ 
+Index: app/src/main/res/layout/widget_check.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><CheckBox xmlns:android=\"http://schemas.android.com/apk/res/android\"\n    android:id=\"@+id/checkBox\"\n    android:layout_width=\"wrap_content\"\n    android:layout_height=\"match_parent\"\n    android:checked=\"true\"\n    android:text=\"check\" />
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/res/layout/widget_check.xml b/app/src/main/res/layout/widget_check.xml
+--- a/app/src/main/res/layout/widget_check.xml	(revision 207311f65a413ee3d449617ca9be0033905c6ece)
++++ b/app/src/main/res/layout/widget_check.xml	(date 1688285221815)
+@@ -1,6 +1,4 @@
+ <CheckBox xmlns:android="http://schemas.android.com/apk/res/android"
+     android:id="@+id/checkBox"
+     android:layout_width="wrap_content"
+-    android:layout_height="match_parent"
+-    android:checked="true"
+-    android:text="check" />
+\ No newline at end of file
++    android:layout_height="40dp" />
+\ No newline at end of file
+Index: app/src/main/java/com/example/eventapp/ui/adapters/ExpandableAdapter.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/example/eventapp/ui/adapters/ExpandableAdapter.kt b/app/src/main/java/com/example/eventapp/ui/adapters/ExpandableAdapter.kt
+new file mode 100644
+--- /dev/null	(date 1688294253723)
++++ b/app/src/main/java/com/example/eventapp/ui/adapters/ExpandableAdapter.kt	(date 1688294253723)
+@@ -0,0 +1,91 @@
++package com.example.eventapp.ui.adapters
++
++
++import android.content.Context
++import android.view.LayoutInflater
++import android.view.View
++import android.view.ViewGroup
++import android.widget.ImageView
++import android.widget.LinearLayout
++import android.widget.ScrollView
++import android.widget.TextView
++import androidx.core.view.ViewCompat
++import androidx.core.widget.NestedScrollView
++import androidx.recyclerview.widget.LinearLayoutManager
++import androidx.recyclerview.widget.RecyclerView
++import com.example.eventapp.R
++import com.example.eventapp.models.shared.FilterItem
++import com.example.eventapp.models.shared.FilterItemData
++
++
++class ExpandableAdapter(
++    var context: Context,
++    private val filters: ArrayList<FilterItem>
++) :
++    RecyclerView.Adapter<ExpandableAdapter.ExpendableViewHolder>() {
++
++    private lateinit var recyclerView: RecyclerView
++
++    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExpendableViewHolder {
++        val itemView = LayoutInflater.from(parent.context).inflate(
++            R.layout.expandable,
++            parent,
++            false
++        )
++
++        return ExpendableViewHolder(itemView)
++    }
++
++
++    override fun getItemCount() = filters.size
++
++
++    override fun onBindViewHolder(holder: ExpendableViewHolder, position: Int) {
++        val currentItem: FilterItem = filters[position]
++        holder.title.text = currentItem.name
++        recyclerView = holder.recyclerView
++        recyclerView.layoutManager =
++            LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
++        recyclerView.isNestedScrollingEnabled = false;
++
++        currentItem.data?.let {
++            currentItem.name?.let { it1 ->
++                setRecyclerView(
++                    it,
++                    it1.toLowerCase()
++                )
++            }
++        }
++        holder.subItem.visibility = if (currentItem.expanded) View.VISIBLE else View.GONE
++        holder.arrow.setImageResource(if (currentItem.expanded) R.drawable.ic_arrow_up_foreground else R.drawable.ic_arrow_down_foreground)
++
++        holder.title.setOnClickListener { v ->
++            val layoutParams = holder.subItem.layoutParams
++            holder.subItem.layoutParams = layoutParams
++            val expanded: Boolean = currentItem.expanded
++            currentItem.expanded = !expanded
++            layoutParams.height = (currentItem.data?.size?.times(110)!!) + 50
++            holder.subItem.visibility = if (expanded) View.VISIBLE else View.GONE
++            holder.arrow.setImageResource(if (expanded) R.drawable.ic_arrow_up_foreground else R.drawable.ic_arrow_down_foreground)
++            notifyItemChanged(position)
++
++        }
++    }
++
++
++    inner class ExpendableViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
++        val title: TextView = itemView.findViewById(R.id.item_title)
++
++        val recyclerView: RecyclerView = itemView.findViewById(R.id.filterData)
++
++        val subItem: LinearLayout = itemView.findViewById(R.id.sub_item)
++        val arrow: ImageView = itemView.findViewById(R.id.arrow)
++    }
++
++    private fun setRecyclerView(filterDataList: MutableList<FilterItemData>, key: String) {
++        val adapter = FilterDataAdapter(filterDataList, key)
++        recyclerView.adapter = adapter
++        ViewCompat.setNestedScrollingEnabled(recyclerView, false)
++    }
++
++}
+Index: app/src/main/java/com/example/eventapp/ui/data/countries.json
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/example/eventapp/ui/data/countries.json b/app/src/main/java/com/example/eventapp/ui/data/countries.json
+new file mode 100644
+--- /dev/null	(date 1687205484433)
++++ b/app/src/main/java/com/example/eventapp/ui/data/countries.json	(date 1687205484433)
+@@ -0,0 +1,88 @@
++{
++  "countries": [
++    {
++      "name": "United States",
++      "code": "US"
++    },
++    {
++      "name": "India",
++      "code": "IN"
++    },
++    {
++      "name": "China",
++      "code": "CN"
++    },
++    {
++      "name": "Indonesia",
++      "code": "ID"
++    },
++    {
++      "name": "Pakistan",
++      "code": "PK"
++    },
++    {
++      "name": "Brazil",
++      "code": "BR"
++    },
++    {
++      "name": "Nigeria",
++      "code": "NG"
++    },
++    {
++      "name": "Bangladesh",
++      "code": "BD"
++    },
++    {
++      "name": "Russia",
++      "code": "RU"
++    },
++    {
++      "name": "Mexico",
++      "code": "MX"
++    },
++    {
++      "name": "Japan",
++      "code": "JP"
++    },
++    {
++      "name": "Ethiopia",
++      "code": "ET"
++    },
++    {
++      "name": "Philippines",
++      "code": "PH"
++    },
++    {
++      "name": "Egypt",
++      "code": "EG"
++    },
++    {
++      "name": "Vietnam",
++      "code": "VN"
++    },
++    {
++      "name": "DR Congo",
++      "code": "CD"
++    },
++    {
++      "name": "Turkey",
++      "code": "TR"
++    },
++    {
++      "name": "Iran",
++      "code": "IR"
++    },
++    {
++      "name": "Germany",
++      "code": "DE"
++    },
++    {
++      "name": "Thailand",
++      "code": "TH"
++    },
++    {
++      "name": "United Kingdom",
++      "code": "GB"
++    }
++  ]
++}
+\ No newline at end of file
+Index: app/src/main/java/com/example/eventapp/models/CountriesWrapper.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/example/eventapp/models/CountriesWrapper.kt b/app/src/main/java/com/example/eventapp/models/CountriesWrapper.kt
+new file mode 100644
+--- /dev/null	(date 1687205450790)
++++ b/app/src/main/java/com/example/eventapp/models/CountriesWrapper.kt	(date 1687205450790)
+@@ -0,0 +1,12 @@
++package com.example.eventapp.models
++
++import com.example.eventapp.models.embedded.events.embedded.venues.Country
++import com.google.gson.annotations.SerializedName
++
++
++data class CountriesWrapper(
++
++    @SerializedName("countries") var countries: ArrayList<Country> = arrayListOf(),
++
++    )
++
+Index: app/src/main/res/layout/expandable.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/res/layout/expandable.xml b/app/src/main/res/layout/expandable.xml
+new file mode 100644
+--- /dev/null	(date 1688290186199)
++++ b/app/src/main/res/layout/expandable.xml	(date 1688290186199)
+@@ -0,0 +1,70 @@
++<?xml version="1.0" encoding="utf-8"?>
++
++
++<com.google.android.flexbox.FlexboxLayout xmlns:android="http://schemas.android.com/apk/res/android"
++    xmlns:app="http://schemas.android.com/apk/res-auto"
++    xmlns:tools="http://schemas.android.com/tools"
++    android:layout_width="match_parent"
++    android:layout_height="wrap_content"
++    android:orientation="vertical"
++    app:alignItems="flex_start"
++    app:flexDirection="column"
++    app:justifyContent="flex_start"
++    app:layout_constraintTop_toTopOf="parent">
++
++    <View
++        android:id="@+id/item_divider"
++        android:layout_width="match_parent"
++        android:layout_height="1dp"
++        android:layout_marginTop="5dp"
++        android:layout_marginBottom="5dp"
++        android:background="#D3D3D3" />
++
++    <com.google.android.flexbox.FlexboxLayout
++        android:id="@+id/recyclerViewFlex"
++        android:layout_width="match_parent"
++        android:layout_height="wrap_content"
++        android:layout_marginTop="4dp"
++        android:paddingLeft="10dp"
++        android:paddingTop="5dp"
++        android:paddingRight="10dp"
++        android:paddingBottom="5dp"
++        app:alignItems="center"
++        app:flexDirection="row"
++        app:justifyContent="space_between"
++        app:layout_constraintTop_toTopOf="parent">
++
++        <TextView
++            android:id="@+id/item_title"
++            android:layout_width="match_parent"
++            android:layout_height="wrap_content"
++            tools:text="Léon: The Professional" />
++
++        <ImageView
++            android:id="@+id/arrow"
++            android:layout_width="30dp"
++            android:layout_height="30dp"
++            android:contentDescription="@string/add_to_fav"
++            android:title="@string/add_to_fav" />
++    </com.google.android.flexbox.FlexboxLayout>
++
++    <LinearLayout
++        android:id="@+id/sub_item"
++        android:layout_width="match_parent"
++        android:layout_height="match_parent"
++        android:orientation="vertical"
++        android:padding="8dp"
++        android:paddingBottom="30dp">
++
++        <androidx.recyclerview.widget.RecyclerView
++            android:id="@+id/filterData"
++            android:layout_width="match_parent"
++            android:layout_height="wrap_content" />
++
++    </LinearLayout>
++
++
++</com.google.android.flexbox.FlexboxLayout>
++
++
++
+Index: app/src/main/res/drawable/ic_arrow_up_foreground.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/res/drawable/ic_arrow_up_foreground.xml b/app/src/main/res/drawable/ic_arrow_up_foreground.xml
+new file mode 100644
+--- /dev/null	(date 1687211405669)
++++ b/app/src/main/res/drawable/ic_arrow_up_foreground.xml	(date 1687211405669)
+@@ -0,0 +1,15 @@
++<vector xmlns:android="http://schemas.android.com/apk/res/android"
++    android:width="108dp"
++    android:height="108dp"
++    android:viewportWidth="24"
++    android:viewportHeight="24"
++    android:tint="#000000">
++  <group android:scaleX="0.58"
++      android:scaleY="0.58"
++      android:translateX="5.04"
++      android:translateY="5.04">
++    <path
++        android:fillColor="@android:color/white"
++        android:pathData="M7.41,15.41L12,10.83l4.59,4.58L18,14l-6,-6 -6,6z"/>
++  </group>
++</vector>
+Index: app/src/main/res/mipmap-anydpi-v26/ic_arrow_up_round.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/res/mipmap-anydpi-v26/ic_arrow_up_round.xml b/app/src/main/res/mipmap-anydpi-v26/ic_arrow_up_round.xml
+new file mode 100644
+--- /dev/null	(date 1687211405721)
++++ b/app/src/main/res/mipmap-anydpi-v26/ic_arrow_up_round.xml	(date 1687211405721)
+@@ -0,0 +1,5 @@
++<?xml version="1.0" encoding="utf-8"?>
++<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
++    <background android:drawable="@drawable/ic_arrow_up_background"/>
++    <foreground android:drawable="@drawable/ic_arrow_up_foreground"/>
++</adaptive-icon>
+\ No newline at end of file
+Index: app/src/main/res/drawable/ic_arrow_up_background.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/res/drawable/ic_arrow_up_background.xml b/app/src/main/res/drawable/ic_arrow_up_background.xml
+new file mode 100644
+--- /dev/null	(date 1687211405701)
++++ b/app/src/main/res/drawable/ic_arrow_up_background.xml	(date 1687211405701)
+@@ -0,0 +1,74 @@
++<?xml version="1.0" encoding="utf-8"?>
++<vector
++    android:height="108dp"
++    android:width="108dp"
++    android:viewportHeight="108"
++    android:viewportWidth="108"
++    xmlns:android="http://schemas.android.com/apk/res/android">
++    <path android:fillColor="#3DDC84"
++          android:pathData="M0,0h108v108h-108z"/>
++    <path android:fillColor="#00000000" android:pathData="M9,0L9,108"
++          android:strokeColor="#33FFFFFF" android:strokeWidth="0.8"/>
++    <path android:fillColor="#00000000" android:pathData="M19,0L19,108"
++          android:strokeColor="#33FFFFFF" android:strokeWidth="0.8"/>
++    <path android:fillColor="#00000000" android:pathData="M29,0L29,108"
++          android:strokeColor="#33FFFFFF" android:strokeWidth="0.8"/>
++    <path android:fillColor="#00000000" android:pathData="M39,0L39,108"
++          android:strokeColor="#33FFFFFF" android:strokeWidth="0.8"/>
++    <path android:fillColor="#00000000" android:pathData="M49,0L49,108"
++          android:strokeColor="#33FFFFFF" android:strokeWidth="0.8"/>
++    <path android:fillColor="#00000000" android:pathData="M59,0L59,108"
++          android:strokeColor="#33FFFFFF" android:strokeWidth="0.8"/>
++    <path android:fillColor="#00000000" android:pathData="M69,0L69,108"
++          android:strokeColor="#33FFFFFF" android:strokeWidth="0.8"/>
++    <path android:fillColor="#00000000" android:pathData="M79,0L79,108"
++          android:strokeColor="#33FFFFFF" android:strokeWidth="0.8"/>
++    <path android:fillColor="#00000000" android:pathData="M89,0L89,108"
++          android:strokeColor="#33FFFFFF" android:strokeWidth="0.8"/>
++    <path android:fillColor="#00000000" android:pathData="M99,0L99,108"
++          android:strokeColor="#33FFFFFF" android:strokeWidth="0.8"/>
++    <path android:fillColor="#00000000" android:pathData="M0,9L108,9"
++          android:strokeColor="#33FFFFFF" android:strokeWidth="0.8"/>
++    <path android:fillColor="#00000000" android:pathData="M0,19L108,19"
++          android:strokeColor="#33FFFFFF" android:strokeWidth="0.8"/>
++    <path android:fillColor="#00000000" android:pathData="M0,29L108,29"
++          android:strokeColor="#33FFFFFF" android:strokeWidth="0.8"/>
++    <path android:fillColor="#00000000" android:pathData="M0,39L108,39"
++          android:strokeColor="#33FFFFFF" android:strokeWidth="0.8"/>
++    <path android:fillColor="#00000000" android:pathData="M0,49L108,49"
++          android:strokeColor="#33FFFFFF" android:strokeWidth="0.8"/>
++    <path android:fillColor="#00000000" android:pathData="M0,59L108,59"
++          android:strokeColor="#33FFFFFF" android:strokeWidth="0.8"/>
++    <path android:fillColor="#00000000" android:pathData="M0,69L108,69"
++          android:strokeColor="#33FFFFFF" android:strokeWidth="0.8"/>
++    <path android:fillColor="#00000000" android:pathData="M0,79L108,79"
++          android:strokeColor="#33FFFFFF" android:strokeWidth="0.8"/>
++    <path android:fillColor="#00000000" android:pathData="M0,89L108,89"
++          android:strokeColor="#33FFFFFF" android:strokeWidth="0.8"/>
++    <path android:fillColor="#00000000" android:pathData="M0,99L108,99"
++          android:strokeColor="#33FFFFFF" android:strokeWidth="0.8"/>
++    <path android:fillColor="#00000000" android:pathData="M19,29L89,29"
++          android:strokeColor="#33FFFFFF" android:strokeWidth="0.8"/>
++    <path android:fillColor="#00000000" android:pathData="M19,39L89,39"
++          android:strokeColor="#33FFFFFF" android:strokeWidth="0.8"/>
++    <path android:fillColor="#00000000" android:pathData="M19,49L89,49"
++          android:strokeColor="#33FFFFFF" android:strokeWidth="0.8"/>
++    <path android:fillColor="#00000000" android:pathData="M19,59L89,59"
++          android:strokeColor="#33FFFFFF" android:strokeWidth="0.8"/>
++    <path android:fillColor="#00000000" android:pathData="M19,69L89,69"
++          android:strokeColor="#33FFFFFF" android:strokeWidth="0.8"/>
++    <path android:fillColor="#00000000" android:pathData="M19,79L89,79"
++          android:strokeColor="#33FFFFFF" android:strokeWidth="0.8"/>
++    <path android:fillColor="#00000000" android:pathData="M29,19L29,89"
++          android:strokeColor="#33FFFFFF" android:strokeWidth="0.8"/>
++    <path android:fillColor="#00000000" android:pathData="M39,19L39,89"
++          android:strokeColor="#33FFFFFF" android:strokeWidth="0.8"/>
++    <path android:fillColor="#00000000" android:pathData="M49,19L49,89"
++          android:strokeColor="#33FFFFFF" android:strokeWidth="0.8"/>
++    <path android:fillColor="#00000000" android:pathData="M59,19L59,89"
++          android:strokeColor="#33FFFFFF" android:strokeWidth="0.8"/>
++    <path android:fillColor="#00000000" android:pathData="M69,19L69,89"
++          android:strokeColor="#33FFFFFF" android:strokeWidth="0.8"/>
++    <path android:fillColor="#00000000" android:pathData="M79,19L79,89"
++          android:strokeColor="#33FFFFFF" android:strokeWidth="0.8"/>
++</vector>
+Index: app/src/main/res/mipmap-anydpi-v26/ic_arrow_up.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/res/mipmap-anydpi-v26/ic_arrow_up.xml b/app/src/main/res/mipmap-anydpi-v26/ic_arrow_up.xml
+new file mode 100644
+--- /dev/null	(date 1687211405777)
++++ b/app/src/main/res/mipmap-anydpi-v26/ic_arrow_up.xml	(date 1687211405777)
+@@ -0,0 +1,5 @@
++<?xml version="1.0" encoding="utf-8"?>
++<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
++    <background android:drawable="@drawable/ic_arrow_up_background"/>
++    <foreground android:drawable="@drawable/ic_arrow_up_foreground"/>
++</adaptive-icon>
+\ No newline at end of file
+Index: .idea/deploymentTargetDropDown.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project version=\"4\">\n  <component name=\"deploymentTargetDropDown\">\n    <targetSelectedWithDropDown>\n      <Target>\n        <type value=\"QUICK_BOOT_TARGET\" />\n        <deviceKey>\n          <Key>\n            <type value=\"VIRTUAL_DEVICE_PATH\" />\n            <value value=\"C:\\Users\\przem\\.android\\avd\\Pixel_6_Pro_API_30.avd\" />\n          </Key>\n        </deviceKey>\n      </Target>\n    </targetSelectedWithDropDown>\n    <timeTargetWasSelectedWithDropDown value=\"2023-06-14T19:09:49.563252600Z\" />\n  </component>\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/deploymentTargetDropDown.xml b/.idea/deploymentTargetDropDown.xml
+--- a/.idea/deploymentTargetDropDown.xml	(revision 207311f65a413ee3d449617ca9be0033905c6ece)
++++ b/.idea/deploymentTargetDropDown.xml	(date 1687205421792)
+@@ -7,11 +7,11 @@
+         <deviceKey>
+           <Key>
+             <type value="VIRTUAL_DEVICE_PATH" />
+-            <value value="C:\Users\przem\.android\avd\Pixel_6_Pro_API_30.avd" />
++            <value value="C:\Users\maciek\.android\avd\Pixel_6_API_33.avd" />
+           </Key>
+         </deviceKey>
+       </Target>
+     </targetSelectedWithDropDown>
+-    <timeTargetWasSelectedWithDropDown value="2023-06-14T19:09:49.563252600Z" />
++    <timeTargetWasSelectedWithDropDown value="2023-06-19T18:17:42.287918300Z" />
+   </component>
+ </project>
+\ No newline at end of file
+Index: app/src/main/java/com/example/eventapp/models/embedded/events/embedded/venues/Country.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.eventapp.models.embedded.events.embedded.venues\n\nimport com.google.gson.annotations.SerializedName\n\n\ndata class Country(\n\n    @SerializedName(\"name\") var name: String? = null,\n    @SerializedName(\"countryCode\") var countryCode: String? = null\n\n)
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/example/eventapp/models/embedded/events/embedded/venues/Country.kt b/app/src/main/java/com/example/eventapp/models/embedded/events/embedded/venues/Country.kt
+--- a/app/src/main/java/com/example/eventapp/models/embedded/events/embedded/venues/Country.kt	(revision 207311f65a413ee3d449617ca9be0033905c6ece)
++++ b/app/src/main/java/com/example/eventapp/models/embedded/events/embedded/venues/Country.kt	(date 1687207847049)
+@@ -4,7 +4,7 @@
+ 
+ 
+ data class Country(
+-
++    var expanded: Boolean = false,
+     @SerializedName("name") var name: String? = null,
+     @SerializedName("countryCode") var countryCode: String? = null
+ 
+Index: app/build.gradle
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>plugins {\n    id 'com.android.application'\n    id 'org.jetbrains.kotlin.android'\n}\n\nandroid {\n    namespace 'com.example.eventapp'\n    compileSdk 33\n\n    defaultConfig {\n        applicationId \"com.example.eventapp\"\n        minSdk 24\n        targetSdk 33\n        versionCode 1\n        versionName \"1.0\"\n\n        testInstrumentationRunner \"androidx.test.runner.AndroidJUnitRunner\"\n    }\n\n    buildTypes {\n        release {\n            minifyEnabled false\n            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'\n        }\n    }\n    compileOptions {\n        sourceCompatibility JavaVersion.VERSION_1_8\n        targetCompatibility JavaVersion.VERSION_1_8\n    }\n    kotlinOptions {\n        jvmTarget = '1.8'\n    }\n    buildFeatures {\n        viewBinding true\n    }\n}\n\ndependencies {\n\n    implementation 'androidx.core:core-ktx:1.8.0'\n    implementation 'androidx.appcompat:appcompat:1.4.1'\n    implementation 'com.google.android.material:material:1.5.0'\n    implementation 'androidx.constraintlayout:constraintlayout:2.1.3'\n    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.4.1'\n    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.1'\n    implementation 'androidx.navigation:navigation-fragment-ktx:2.5.2'\n    implementation 'androidx.navigation:navigation-ui-ktx:2.5.2'\n    implementation 'com.google.code.gson:gson:2.8.2'\n    implementation 'com.google.android.flexbox:flexbox:3.0.0'\n    testImplementation 'junit:junit:4.13.2'\n    androidTestImplementation 'androidx.test.ext:junit:1.1.3'\n    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'\n    implementation 'com.squareup.okhttp3:okhttp:3.8.1'\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/build.gradle b/app/build.gradle
+--- a/app/build.gradle	(revision 207311f65a413ee3d449617ca9be0033905c6ece)
++++ b/app/build.gradle	(date 1688074621981)
+@@ -38,6 +38,7 @@
+ dependencies {
+ 
+     implementation 'androidx.core:core-ktx:1.8.0'
++
+     implementation 'androidx.appcompat:appcompat:1.4.1'
+     implementation 'com.google.android.material:material:1.5.0'
+     implementation 'androidx.constraintlayout:constraintlayout:2.1.3'
+@@ -47,6 +48,8 @@
+     implementation 'androidx.navigation:navigation-ui-ktx:2.5.2'
+     implementation 'com.google.code.gson:gson:2.8.2'
+     implementation 'com.google.android.flexbox:flexbox:3.0.0'
++    implementation 'androidx.recyclerview:recyclerview:1.3.0'
++    implementation 'androidx.core:core:1.10.1'
+     testImplementation 'junit:junit:4.13.2'
+     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
+     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+Index: app/src/main/java/com/example/eventapp/models/shared/FilterItem.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/example/eventapp/models/shared/FilterItem.kt b/app/src/main/java/com/example/eventapp/models/shared/FilterItem.kt
+new file mode 100644
+--- /dev/null	(date 1687639257247)
++++ b/app/src/main/java/com/example/eventapp/models/shared/FilterItem.kt	(date 1687639257247)
+@@ -0,0 +1,10 @@
++package com.example.eventapp.models.shared
++
++import com.google.gson.annotations.SerializedName
++
++data class FilterItem(
++    @SerializedName("name") var name: String? = null,
++    @SerializedName("data") var data: MutableList<FilterItemData>? = null,
++    @SerializedName("expanded") var expanded: Boolean = false
++)
++
+Index: app/src/main/java/com/example/eventapp/ui/utils/Storage.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/example/eventapp/ui/utils/Storage.kt b/app/src/main/java/com/example/eventapp/ui/utils/Storage.kt
+new file mode 100644
+--- /dev/null	(date 1688292266647)
++++ b/app/src/main/java/com/example/eventapp/ui/utils/Storage.kt	(date 1688292266647)
+@@ -0,0 +1,27 @@
++package com.example.eventapp.ui.utils
++
++import android.content.Context
++import android.content.SharedPreferences
++import com.google.gson.Gson
++import com.google.gson.reflect.TypeToken
++
++
++fun saveCheckedItems(context: Context, checkedItems: ArrayList<String>, key: String) {
++    val sharedPreferences: SharedPreferences =
++        context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
++    val editor = sharedPreferences.edit()
++    val gson = Gson()
++    val json = gson.toJson(checkedItems)
++    editor.putString(key, json)
++    editor.apply()
++}
++
++
++fun getCheckedItems(context: Context, key: String): ArrayList<String> {
++    val sharedPreferences: SharedPreferences =
++        context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
++    val gson = Gson()
++    val json = sharedPreferences.getString(key, null)
++    val type = object : TypeToken<List<String>>() {}.type
++    return gson.fromJson(json, type) ?: ArrayList()
++}
+\ No newline at end of file
+Index: app/src/main/assets/genres.json
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/assets/genres.json b/app/src/main/assets/genres.json
+new file mode 100644
+--- /dev/null	(date 1688289603912)
++++ b/app/src/main/assets/genres.json	(date 1688289603912)
+@@ -0,0 +1,16 @@
++{
++  "genres": [
++    {
++      "name": "Music",
++      "id": "KZFzniwnSyZfZ7v7nJ"
++    },
++    {
++      "name": "Sports",
++      "id": "KZFzniwnSyZfZ7v7nE"
++    },
++    {
++      "name": "Miscellaneous",
++      "id": "KZFzniwnSyZfZ7v7n1"
++    }
++  ]
++}
+Index: app/src/main/java/com/example/eventapp/ui/adapters/FilterDataAdapter.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/example/eventapp/ui/adapters/FilterDataAdapter.kt b/app/src/main/java/com/example/eventapp/ui/adapters/FilterDataAdapter.kt
+new file mode 100644
+--- /dev/null	(date 1688294218712)
++++ b/app/src/main/java/com/example/eventapp/ui/adapters/FilterDataAdapter.kt	(date 1688294218712)
+@@ -0,0 +1,65 @@
++package com.example.eventapp.ui.adapters
++
++
++import android.content.Context
++import android.content.SharedPreferences
++import android.view.LayoutInflater
++import android.view.View
++import android.view.ViewGroup
++import android.widget.CheckBox
++import androidx.core.view.ViewCompat
++import androidx.recyclerview.widget.RecyclerView
++import com.example.eventapp.R
++import com.example.eventapp.models.shared.FilterItemData
++import com.example.eventapp.ui.utils.getCheckedItems
++import com.example.eventapp.ui.utils.saveCheckedItems
++import com.google.gson.Gson
++
++
++class FilterDataAdapter(
++    private val filtersData: MutableList<FilterItemData>, private val key: String
++) :
++    RecyclerView.Adapter<FilterDataAdapter.ExpendableViewHolder>() {
++    private var checkedItems = arrayListOf<String>()
++
++    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExpendableViewHolder {
++        val itemView = LayoutInflater.from(parent.context).inflate(
++            R.layout.widget_check,
++            parent,
++            false
++        )
++        checkedItems = getCheckedItems(parent.context, key)
++
++        return ExpendableViewHolder(itemView)
++    }
++
++
++    override fun getItemCount() = filtersData.size
++
++    override fun onBindViewHolder(holder: ExpendableViewHolder, position: Int) {
++        val currentItem: FilterItemData = filtersData[position]
++        val context = holder.checkbox.context
++        val key = currentItem.key
++        val value = currentItem.value
++        holder.checkbox.text = currentItem.name.toString()
++        holder.checkbox.isChecked = checkedItems.contains(value)
++
++        holder.checkbox.setOnCheckedChangeListener { _, isChecked ->
++            if (value != null) {
++                if (isChecked) {
++                    checkedItems.add(value)
++                } else {
++                    checkedItems.remove(value)
++                }
++            }
++            saveCheckedItems(context, checkedItems, key)
++        }
++    }
++
++
++    inner class ExpendableViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
++        val checkbox: CheckBox = itemView.findViewById(R.id.checkBox)
++    }
++
++
++}
+Index: app/src/main/java/com/example/eventapp/models/GenresWrapper.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/example/eventapp/models/GenresWrapper.kt b/app/src/main/java/com/example/eventapp/models/GenresWrapper.kt
+new file mode 100644
+--- /dev/null	(date 1688289738214)
++++ b/app/src/main/java/com/example/eventapp/models/GenresWrapper.kt	(date 1688289738214)
+@@ -0,0 +1,10 @@
++package com.example.eventapp.models
++
++import com.example.eventapp.models.shared.Genre
++import com.google.gson.annotations.SerializedName
++
++
++data class GenresWrapper(
++    @SerializedName("genres") var genres: ArrayList<Genre> = arrayListOf(),
++)
++
+Index: app/src/main/res/layout/filters.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/res/layout/filters.xml b/app/src/main/res/layout/filters.xml
+new file mode 100644
+--- /dev/null	(date 1688075104486)
++++ b/app/src/main/res/layout/filters.xml	(date 1688075104486)
+@@ -0,0 +1,13 @@
++<?xml version="1.0" encoding="utf-8"?>
++
++
++<androidx.recyclerview.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
++    xmlns:app="http://schemas.android.com/apk/res-auto"
++    android:id="@+id/filterContent"
++    android:layout_width="match_parent"
++    android:layout_height="wrap_content"
++    android:nestedScrollingEnabled="true"
++    android:scrollbars="vertical"
++    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
++
++
