@@ -1,8 +1,8 @@
 <resources>
-    <string name="app_name">Eventos</string>
+    <string name="app_name">Eventy</string>
     <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
+    <string name="title_dashboard">Znajdź eventy</string>
+    <string name="title_notifications">Twoje eventy</string>
     <string name="drawer_open">Open Drawer</string>
     <string name="drawer_close">Close Drawer</string>
     <string name="thumbnail">Thumbnail</string>
