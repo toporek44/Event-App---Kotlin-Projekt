@@ -1,4 +1,4 @@
-package com.example.eventapp.ui.notifications
+package com.example.eventapp.ui.savedEvents
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -16,7 +16,7 @@ import com.example.eventapp.ui.home.EventListAdapter
 import com.example.eventapp.ui.utils.readFavorites
 import java.util.ArrayList
 
-class NotificationsFragment : Fragment() {
+class SavedEventsFragment : Fragment() {
 
     private var _binding: FragmentNotificationsBinding? = null
     private lateinit var recyclerView: RecyclerView
@@ -28,8 +28,8 @@ class NotificationsFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val notificationsViewModel =
-            ViewModelProvider(this).get(NotificationsViewModel::class.java)
+        val savedEventsViewModel =
+            ViewModelProvider(this).get(SavedEventsViewModel::class.java)
 
         _binding = FragmentNotificationsBinding.inflate(inflater, container, false)
         val root: View = binding.root

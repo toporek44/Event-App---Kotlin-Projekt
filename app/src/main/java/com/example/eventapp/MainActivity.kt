@@ -5,13 +5,12 @@ import android.content.Context
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.CheckBox
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
-import com.example.eventapp.ui.dashboard.DashboardFragment
+import com.example.eventapp.ui.eventSearch.EventSearchFragment
 import com.example.eventapp.ui.home.HomeFragment
-import com.example.eventapp.ui.notifications.NotificationsFragment
+import com.example.eventapp.ui.savedEvents.SavedEventsFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
 import android.widget.Button;
@@ -28,7 +27,6 @@ import com.example.eventapp.models.GenresWrapper
 import com.example.eventapp.models.shared.FilterItem
 import com.example.eventapp.models.shared.FilterItemData
 import com.example.eventapp.ui.adapters.ExpandableAdapter
-import com.example.eventapp.ui.home.EventListAdapter
 import com.example.eventapp.ui.utils.getCheckedItems
 import com.example.eventapp.ui.utils.saveCheckedItems
 import com.google.gson.Gson
@@ -63,7 +61,7 @@ class MainActivity : AppCompatActivity() {
         val clearFiltersItemMenu: MenuItem? = menu.findItem(R.id.clear_filters)
         val filterButton: Button? = filterItemMenu?.actionView?.findViewById<Button>(R.id.button)
         val searchInput: EditText? = searchItemMenu?.actionView?.findViewById<EditText>(R.id.search)
-        val dashboard = DashboardFragment()
+        val dashboard = EventSearchFragment()
         val clearFiltersButton: Button? =
             clearFiltersItemMenu?.actionView?.findViewById<Button>(R.id.button)
 
@@ -128,7 +126,7 @@ class MainActivity : AppCompatActivity() {
 
                 R.id.navigation_notifications -> {
                     supportFragmentManager.beginTransaction()
-                        .replace(R.id.contentLayout, NotificationsFragment())
+                        .replace(R.id.contentLayout, SavedEventsFragment())
                         .commit()
                     supportActionBar?.setDisplayHomeAsUpEnabled(false)
                     true

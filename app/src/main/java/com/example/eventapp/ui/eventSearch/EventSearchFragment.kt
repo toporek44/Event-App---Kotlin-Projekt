@@ -1,12 +1,10 @@
-package com.example.eventapp.ui.dashboard
+package com.example.eventapp.ui.eventSearch
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -16,11 +14,9 @@ import com.example.eventapp.databinding.FragmentDashboardBinding
 import com.example.eventapp.models.EventsWrapper
 import com.example.eventapp.models.embedded.events.Events
 import com.example.eventapp.ui.home.EventListAdapter
-import com.example.eventapp.ui.utils.getCheckedItems
 import com.google.gson.Gson
-import kotlin.math.log
 
-class DashboardFragment : Fragment() {
+class EventSearchFragment : Fragment() {
 
     private var _binding: FragmentDashboardBinding? = null
     private lateinit var recyclerView: RecyclerView
@@ -32,8 +28,8 @@ class DashboardFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val dashboardViewModel =
-            ViewModelProvider(this).get(DashboardViewModel::class.java)
+        val eventSearchViewModel =
+            ViewModelProvider(this).get(EventSearchViewModel::class.java)
 
         _binding = FragmentDashboardBinding.inflate(inflater, container, false)
         val root: View = binding.root
