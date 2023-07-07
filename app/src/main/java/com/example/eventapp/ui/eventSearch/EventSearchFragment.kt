@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.eventapp.MainActivity
 import com.example.eventapp.R
-import com.example.eventapp.databinding.FragmentDashboardBinding
+import com.example.eventapp.databinding.FragmentEventSearchBinding
 import com.example.eventapp.models.EventsWrapper
 import com.example.eventapp.models.embedded.events.Events
 import com.example.eventapp.ui.home.EventListAdapter
@@ -18,7 +18,7 @@ import com.google.gson.Gson
 
 class EventSearchFragment : Fragment() {
 
-    private var _binding: FragmentDashboardBinding? = null
+    private var _binding: FragmentEventSearchBinding? = null
     private lateinit var recyclerView: RecyclerView
 
     private val binding get() = _binding!!
@@ -31,7 +31,7 @@ class EventSearchFragment : Fragment() {
         val eventSearchViewModel =
             ViewModelProvider(this).get(EventSearchViewModel::class.java)
 
-        _binding = FragmentDashboardBinding.inflate(inflater, container, false)
+        _binding = FragmentEventSearchBinding.inflate(inflater, container, false)
         val root: View = binding.root
         (activity as? MainActivity)?.setDrawerVisible(true)
 

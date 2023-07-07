@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.eventapp.MainActivity
 import com.example.eventapp.R
-import com.example.eventapp.databinding.FragmentNotificationsBinding
+import com.example.eventapp.databinding.FragmentEventSearchBinding
 import com.example.eventapp.models.embedded.events.Events
 import com.example.eventapp.ui.home.EventListAdapter
 import com.example.eventapp.ui.utils.readFavorites
@@ -18,7 +18,7 @@ import java.util.ArrayList
 
 class SavedEventsFragment : Fragment() {
 
-    private var _binding: FragmentNotificationsBinding? = null
+    private var _binding: FragmentEventSearchBinding? = null
     private lateinit var recyclerView: RecyclerView
 
     private val binding get() = _binding!!
@@ -31,7 +31,7 @@ class SavedEventsFragment : Fragment() {
         val savedEventsViewModel =
             ViewModelProvider(this).get(SavedEventsViewModel::class.java)
 
-        _binding = FragmentNotificationsBinding.inflate(inflater, container, false)
+        _binding = FragmentEventSearchBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
         (activity as? MainActivity)?.setDrawerVisible(false)
